@@ -40,32 +40,12 @@ It delivers the latest news from multiple sources with beautiful UI, smooth pagi
 
 ---
 
-## 🪜 Project Structure
-
-com.ahmadmaaz1.newsy
-│
-├── data/ # Repositories, Retrofit APIs, DTOs
-├── domain/ # Models and Use Cases
-├── presentation/
-│ ├── home/ # Home screen with news list
-│ ├── detail/ # Article detail screen
-│ ├── search/ # Search UI
-│ ├── component/ # Reusable composables (ArticleCard, ShimmerEffect, etc.)
-│ ├── navgraph/ # App navigation
-│ └── ads/ # AdMob banner/native/rewarded components
-│
-└── di/ # Hilt dependency injection setup
-
-yaml
-Copy code
-
----
 
 ## ⚙️ Setup Instructions
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/<your-username>/Newsy.git
+   git clone https://github.com/zmaryalaitooti/Newsy.git
    cd Newsy
 Open in Android Studio (Arctic Fox or newer)
 
@@ -118,16 +98,3 @@ Ali Maaz Ahmad
 💼 LinkedIn Profile
 🐙 GitHub
 
-🪪 License
-sql
-Copy code
-MIT License
-
-Copyright (c) 2025 Ali Maaz Ahmad
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software...
-⭐ Don’t forget to star the repo if you like it!
