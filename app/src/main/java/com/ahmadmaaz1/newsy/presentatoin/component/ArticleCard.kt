@@ -59,16 +59,17 @@ fun ArticleCard(modifier: Modifier = Modifier, article: Article, onClick: () -> 
             modifier = Modifier.padding(horizontal = 3.dp).height(96.dp)
         ) {
             Text(
-                text = article.title.toString(),
-                style = MaterialTheme.typography.bodyMedium,
+                text = article.title.toString().uppercase(),
+                style = MaterialTheme.typography.labelLarge.copy(
+                    color = MaterialTheme.colorScheme.secondary),
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 2
+                maxLines = 1
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = article.source?.name.toString() ?: " ",
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                    text = article.source.name.toString(),
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = Bold),
                     color = colorResource(R.color.black)
                 )
 
@@ -81,7 +82,7 @@ fun ArticleCard(modifier: Modifier = Modifier, article: Article, onClick: () -> 
 
                 Text(
                     text = article.publishedAt.toString(),
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.labelMedium,
                     color = colorResource(R.color.black)
                 )            }
         }
@@ -95,7 +96,7 @@ fun ArticleCard(modifier: Modifier = Modifier, article: Article, onClick: () -> 
 private fun ArticleCardPreview() {
     NewsyTheme {
         ArticleCard(
-            Modifier, article = Article(author = null,content = null,description = null,publishedAt = "2h", source = Source(name = "khan", id = null), title = "djijieroioioiroeoro",url = "i", urlToImage = "dkji")
+            Modifier, article = Article(author = null,content = null,description = null,publishedAt = "2h", source = Source(name = "khan", id = null), title = "new news ",url = "i", urlToImage = "dkji")
         ) { }
     }
 }

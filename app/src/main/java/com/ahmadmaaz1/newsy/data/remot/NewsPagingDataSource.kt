@@ -1,8 +1,11 @@
 package com.ahmadmaaz1.newsy.data.remot
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ahmadmaaz1.newsy.domain.model.Article
+
+private val TAG = "NewsPagingDataSource"
 
 class NewsPagingDataSource(val newsApi: NewsApi, val sources: String) :
     PagingSource<Int, Article>() {
@@ -10,10 +13,12 @@ class NewsPagingDataSource(val newsApi: NewsApi, val sources: String) :
     private var totalNewsCount = 0
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
-        val page = params.key ?: 0
-        val result = newsApi.getNews(page = page, sources = sources)
+        val page = params.key ?: 1
 
         return try {
+
+            val result = newsApi.getNews(page = page, sources = sources)
+
             if (result.isSuccessful && result.body() != null) {
                 totalNewsCount += result.body()?.totalResults ?: 0
 
@@ -25,7 +30,7 @@ class NewsPagingDataSource(val newsApi: NewsApi, val sources: String) :
                 )
 
             } else {
-                LoadResult.Error(throwable = Throwable("the api error not data"))
+                LoadResult.Error(throwable = Throwable("the api error not data ${result.message()}"))
             }
         } catch (e: Exception) {
             LoadResult.Error(e)

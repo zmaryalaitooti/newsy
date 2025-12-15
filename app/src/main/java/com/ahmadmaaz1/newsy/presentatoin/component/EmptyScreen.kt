@@ -1,5 +1,6 @@
 package com.ahmadmaaz1.newsy.presentatoin.component
 
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,16 +29,17 @@ import androidx.paging.LoadState
 import com.ahmadmaaz1.newsy.R
 import java.net.ConnectException
 import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
+private const val TAG = "EmptyScreen"
 @Composable
 fun EmptyScreen(error: LoadState.Error? = null) {
     var message by remember { mutableStateOf(parseErrorMessage(error = error)) }
 
-    var icon by remember { mutableStateOf(R.drawable.logo) }//network error icon
-
+    var icon by remember { mutableIntStateOf(R.drawable.logo) }//network error icon
+    Log.d(TAG, "EmptyScreen: error message is ${error == null}")
     if (error == null) {
         message = "you have not saved news so far !"
-        icon = R.drawable.no_data
     }
 
     var startAnimation by remember { mutableStateOf(false) }
@@ -49,7 +52,7 @@ fun EmptyScreen(error: LoadState.Error? = null) {
         startAnimation = true
     }
 
-    EmptyContent(alpha = animation,message = message,icon)
+    EmptyContent(alpha = animation,message = message, icon = icon)
 }
 
 
@@ -67,33 +70,46 @@ fun EmptyContent(alpha: Float, message: String, icon: Int) {
             tint = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray,
             modifier = Modifier
                 .size(120.dp)
-                .alpha(0.5f)//alpha
+                .alpha(alpha)//alpha
         )
 
         Text(
             text = message,
             modifier = Modifier
                 .padding(10.dp)
-                .alpha(0.5f),//alpha
+                .alpha(alpha),//alpha
             style = MaterialTheme.typography.bodyMedium,
             color = if (isSystemInDarkTheme()) Color.LightGray else Color.DarkGray
         )
     }
 }
 
+
+//fun parseErrorMessage(error: LoadState.Error?): String {
+//    return when (val e = error?.error) {
+//        is SocketTimeoutException -> "Internet unavailable"
+//        is ConnectException -> "Server unavailable"
+//        is UnknownHostException -> "No internet connection"
+//        else -> e?.message ?: "Unknown error"
+//    }
+//}
+
 fun parseErrorMessage(error: LoadState.Error?): String {
 
     return when (error?.error) {
         is SocketTimeoutException -> {
-            "Server unavailable"
+            "Internet unavailable"
         }
 
         is ConnectException -> {
-            "Internet unavailable "
+            "Server unavailable "
+        }
+        is Throwable ->{
+            "No such News available"
         }
 
         else -> {
-            "Unknown error"
+            "Unknown error ${error?.error?.message}"
         }
     }
 }

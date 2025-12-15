@@ -35,7 +35,7 @@ fun Modifier.ShimmerEffect() = composed {
             repeatMode = RepeatMode.Reverse
         )
     ).value
-    background(color = colorResource(R.color.teal_700).copy(alpha))
+    background(color = MaterialTheme.colorScheme.primary.copy(alpha))
 
 }
 

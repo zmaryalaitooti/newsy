@@ -1,14 +1,23 @@
-package com.ahmadmaaz1.newsy.domain.repository;
+package com.ahmadmaaz1.newsy.domain.repository
 
-import androidx.paging.PagingData;
+import androidx.paging.PagingData
+import com.ahmadmaaz1.newsy.domain.model.Article
+import kotlinx.coroutines.flow.Flow
 
-import com.ahmadmaaz1.newsy.domain.model.Article;
+interface Repository {
 
-import java.util.List;
+    fun getNews(sources: List<String?>?): Flow<PagingData<Article>>
 
-import kotlinx.coroutines.flow.Flow;
+    fun getNewsSearch(
+        searchQuery: String?,
+        sources: List<String?>?
+    ): Flow<PagingData<Article>>
 
-public interface Repository {
-    Flow<PagingData<Article>> getNews(List<String> sources);
+   suspend fun insertArticle(article: Article)
 
+    suspend fun deleteArticle(article: Article)
+
+    fun getArticles(): Flow<List<Article>>
+
+    suspend fun getArticle(url: String): Article
 }

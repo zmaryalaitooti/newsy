@@ -1,11 +1,13 @@
 package com.ahmadmaaz1.newsy
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
@@ -20,14 +22,19 @@ import com.ahmadmaaz1.newsy.ui.theme.NewsyTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val mainViewModel by viewModels<MainViewModel>()
-
+    @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window,false)
+//        window.insetsController?.apply {
+//            hide(android.view.WindowInsets.Type.systemBars())
+//            systemBarsBehavior = android.view.WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+//        }
         installSplashScreen().apply {
             setKeepOnScreenCondition {
                 mainViewModel.splashScreen
@@ -44,8 +51,14 @@ class MainActivity : ComponentActivity() {
                 }
                 Box(modifier = Modifier.background(MaterialTheme.colorScheme.background)){
                     NewsNavGraph(mainViewModel.startDestination)
+//                    EmptyScreen()
                 }
             }
         }
     }
+
+
 }
+
+
+

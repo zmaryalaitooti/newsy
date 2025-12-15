@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
@@ -17,12 +18,35 @@ import com.ahmadmaaz1.newsy.domain.model.Article
 @Composable
 fun NewsArticleList(
     modifier: Modifier = Modifier,
+    article: List<Article>,
+    onClick : (Article) ->Unit
+) {
+
+    if (article.isEmpty()){
+        EmptyScreen()
+    }
+        LazyColumn (modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(all = 11.dp))//extraSmall
+        {
+            items(count = article.size) {
+                val article = article[it]
+                    ArticleCard(article = article, onClick = {onClick(article)})
+                }
+
+        }
+
+}
+
+@Composable
+fun NewsArticleList(
+    modifier: Modifier = Modifier,
     article: LazyPagingItems<Article>,
     onClick : (Article) ->Unit
 ) {
     val handlePagingResult = handlePagingResult(article = article)
     if (handlePagingResult){
-        LazyColumn (modifier = modifier.fillMaxSize(),
+        LazyColumn (modifier = modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = PaddingValues(all = 11.dp))//extraSmall
         {
@@ -46,6 +70,7 @@ fun handlePagingResult(article: LazyPagingItems<Article>) : Boolean{
         else -> null
     }
 
+    print("error is that ${error?.error?.message}")
     return when{
         loadState.refresh is LoadState.Loading -> {
             ShimmerEffect()
@@ -55,13 +80,17 @@ fun handlePagingResult(article: LazyPagingItems<Article>) : Boolean{
             EmptyScreen(error)
             false
         }
+        article.itemCount == 0 -> {
+            EmptyScreen( LoadState.Error(Throwable("No such News available")))
+            false
+        }
         else ->
             true
     }
 }
 
 @Composable
-private fun ShimmerEffect() {// dimention
+private fun ShimmerEffect() {// dimension
     Column(verticalArrangement = Arrangement.spacedBy(22.dp)) {
         repeat(10) {//dimention
             ArticleCardShimmerEffect(modifier = Modifier.padding(horizontal = 22.dp))

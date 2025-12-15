@@ -5,14 +5,10 @@ plugins {
     // dagger hilt
     id("org.jetbrains.kotlin.kapt")
     id ("com.google.dagger.hilt.android")
+
+    id("kotlin-parcelize")
 }
 
-apply<HelloWordPlugin>()
-class HelloWordPlugin : Plugin<Project>{
-    override fun apply (target:Project){
-        println("Hello word in plugin ")
-    }
-}
 
 android {
     namespace = "com.ahmadmaaz1.newsy"
@@ -20,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ahmadmaaz1.newsy"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -67,6 +63,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    val room_version = "2.8.3"
+    /// Room Db ///
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+
     // dagger hilt setup
     implementation ("com.google.dagger:hilt-android:2.56.2")
     kapt("com.google.dagger:hilt-compiler:2.56.2")
@@ -94,6 +95,11 @@ dependencies {
     /// PAGING ////
     implementation( "androidx.paging:paging-runtime:3.3.6")
     implementation( "androidx.paging:paging-compose:3.2.1")
+
+
+    //ads
+    //noinspection UseTomlInstead
+    implementation("com.google.android.gms:play-services-ads:24.8.0")
 
 
 
