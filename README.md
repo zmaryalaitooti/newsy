@@ -94,6 +94,6 @@ implementation "com.squareup.retrofit2:retrofit:<latest>"
 implementation "io.coil-kt:coil-compose:<latest>"
 🧑‍💻 Author
   Ali
-📧 [alitooti349@gmail.com]
-💼 https://www.linkedin.com/zmaryalai-ali
-🐙 GitHub](https://github.com/zmaryalaitooti
+📧 Email us: alitooti349@gmail.com  
+💼 LinkedIn: https://www.linkedin.com/zmaryalai-ali  
+🐙 GitHub: https://github.com/zmaryalaitooti
