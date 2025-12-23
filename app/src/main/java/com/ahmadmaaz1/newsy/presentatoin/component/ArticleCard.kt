@@ -2,11 +2,14 @@ package com.ahmadmaaz1.newsy.presentatoin.component
 
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.os.Build
 import androidx.annotation.ColorRes
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -37,8 +40,12 @@ import coil.request.ImageResult
 import com.ahmadmaaz1.newsy.R
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.domain.model.Source
+import com.ahmadmaaz1.newsy.presentatoin.component.getTimeAgo
 import com.ahmadmaaz1.newsy.ui.theme.NewsyTheme
+import java.time.Duration
+import java.time.Instant
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ArticleCard(modifier: Modifier = Modifier, article: Article, onClick: () -> Unit) {
     val context = LocalContext.current
@@ -79,9 +86,8 @@ fun ArticleCard(modifier: Modifier = Modifier, article: Article, onClick: () -> 
                     modifier = Modifier.size(11.dp),
                     tint = colorResource(R.color.black)
                     )
-
                 Text(
-                    text = article.publishedAt.toString(),
+                    text = getTimeAgo(isoDate = article.publishedAt.toString()),
                     style = MaterialTheme.typography.labelMedium,
                     color = colorResource(R.color.black)
                 )            }
@@ -90,6 +96,36 @@ fun ArticleCard(modifier: Modifier = Modifier, article: Article, onClick: () -> 
 }
 
 
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun RowScope.getTimeAgo(isoDate: String): String {
+    // Parse the input date
+    val time = Instant.parse(isoDate)
+    val now = Instant.now()
+
+    // Calculate difference
+    val duration = Duration.between(time, now)
+
+    val seconds = duration.seconds
+    val minutes = seconds / 60
+    val hours = minutes / 60
+    val days = hours / 24
+    val months = days / 30
+    val years = days / 365
+
+    return when {
+        seconds < 60 -> "${seconds}s ago"
+        minutes < 60 -> "${minutes}m ago"
+        hours < 24 -> "${hours}h ago"
+        days < 30 -> "${days}d ago"
+        months < 12 -> "${months}mo ago"
+        else -> "${years}y ago"
+    }
+}
+
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable

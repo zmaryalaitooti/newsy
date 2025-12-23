@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,6 +52,10 @@ fun NewsArticleList(
             contentPadding = PaddingValues(all = 11.dp))//extraSmall
         {
             items(count = article.itemCount) {
+                // Show a native ad every 5 items
+                if ((it + 1) % 5 == 0) {
+                    NativeAdComposable()
+                }
                 article[it]?.let {
                     ArticleCard(article = it, onClick = {onClick(it)})
                 }

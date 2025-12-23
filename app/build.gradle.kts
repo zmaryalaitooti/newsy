@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -99,7 +100,7 @@ dependencies {
 
     //ads
     //noinspection UseTomlInstead
-    implementation("com.google.android.gms:play-services-ads:24.8.0")
+    implementation("com.google.android.gms:play-services-ads:23.4.0")
 
 
 

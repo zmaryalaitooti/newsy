@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SplashScreen"
+        android:theme="@style/Theme.Newsy"
         tools:targetApi="31">
 
         <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
@@ -32,7 +32,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/NewsSplashScreeThem">
+            android:theme="@style/Theme.Newsy">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -1,15 +1,19 @@
 package com.ahmadmaaz1.newsy.presentatoin.detail
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +34,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmadmaaz1.newsy.R
 import com.ahmadmaaz1.newsy.domain.model.Source
+import com.ahmadmaaz1.newsy.presentatoin.detail.component.InterstitialAdManager
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
@@ -41,6 +46,8 @@ fun DetailScreen(
 ) {
     val context = LocalContext.current
 
+    InterstitialAdManager.loadAd(context as Activity)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,14 +58,19 @@ fun DetailScreen(
             isBookMar = viewmodel.sideEffect,
             onBackClick = navigateUp,
             onBrowseClick = {
-                Intent(Intent.ACTION_VIEW).also {
-                    it.data = article.url.toUri()
-                    if (it.resolveActivity(context.packageManager) != null) {
-                        context.startActivity(it)
-                    }
+                if (viewmodel.isAdsShow == 0) {
+                    InterstitialAdManager.showAd(
+                        activity = context,
+                        onAdsShow = { viewmodel.isAdsShow = it })
                 }
+                goBrowse(article = article, context = context)
             },
             onShareClick = {
+                if (viewmodel.isAdsShow == 0) {
+                    InterstitialAdManager.showAd(
+                        activity = context,
+                        onAdsShow = { viewmodel.isAdsShow = it })
+                }
                 Intent(Intent.ACTION_SEND).also {
                     it.putExtra(Intent.EXTRA_TIME, article.url)
                     it.type = "text/plain"
@@ -78,9 +90,10 @@ fun DetailScreen(
                 top = 24.dp
             ),
         ) {
-            item{
+            item {
                 AsyncImage(
-                    model = ImageRequest.Builder(context = context).data(article.urlToImage).build(),
+                    model = ImageRequest.Builder(context = context).data(article.urlToImage)
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -89,17 +102,34 @@ fun DetailScreen(
                     contentScale = ContentScale.Crop
                 )
 
-                Spacer(Modifier.height(24.dp,)//medium padding1
+                Spacer(
+                    Modifier.height(24.dp)//medium padding1
                 )
 
-                Text(style = MaterialTheme.typography.displaySmall,
+                Text(
+                    style = MaterialTheme.typography.displaySmall,
                     text = article.title.toString(),
                     color = colorResource(R.color.teal_700)//textTitle
                 )
 
-                Text(style = MaterialTheme.typography.bodyMedium,
+                Text(
+                    style = MaterialTheme.typography.bodyMedium,
                     text = article.content.toString(),
                     color = colorResource(R.color.black)//body
+                )
+
+                Text(
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .clickable(enabled = true, onClick = {
+                            if (viewmodel.isAdsShow == 0){
+                                InterstitialAdManager.showAd(activity = context, onAdsShow = {viewmodel.isAdsShow = 1})
+                            }
+                            goBrowse(article = article, context = context)
+                        }),
+                    text = "More...",
+                    color = MaterialTheme.colorScheme.primary//body
                 )
             }
 
@@ -108,6 +138,15 @@ fun DetailScreen(
 
 }
 
+
+private fun goBrowse(article: Article, context: Context) {
+    Intent(Intent.ACTION_VIEW).also {
+        it.data = article.url.toUri()
+        if (it.resolveActivity(context.packageManager) != null) {
+            context.startActivity(it)
+        }
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.R)
 @Preview(showBackground = true)

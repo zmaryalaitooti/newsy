@@ -18,7 +18,6 @@ import com.ahmadmaaz1.newsy.R
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.presentatoin.component.NewsArticleList
 import com.ahmadmaaz1.newsy.presentatoin.component.SearchBar
-import com.ahmadmaaz1.newsy.presentatoin.navgraph.Route
 
 @Composable
 fun SearchScreen(
@@ -38,7 +37,8 @@ fun SearchScreen(
             color = colorResource(R.color.black) //text_title
         )
 
-        SearchBar( modifier = Modifier.fillMaxWidth().padding(top = 22.dp),
+        SearchBar( isKeyboardShow = true
+            , modifier = Modifier.fillMaxWidth().padding(top = 22.dp),
             text = state.search,
             onclick = {},
             readOnly = false,

@@ -1,8 +1,6 @@
 package com.ahmadmaaz1.newsy.presentatoin.component
 
-import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.icu.text.StringSearch
 import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,7 +9,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -24,7 +21,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -33,7 +29,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,6 +40,7 @@ private const val TAG = "SearchBar"
 
 @Composable
 fun SearchBar(
+    isKeyboardShow : Boolean = false,
     modifier: Modifier = Modifier,
     onclick: () -> Unit,
     text: String,
@@ -61,8 +57,11 @@ fun SearchBar(
     // 🔥 Automatically request focus when entering the screen
     LaunchedEffect(Unit) {
         delay(200) // small delay for smoother UI transition
-        focusRequester.requestFocus()
-        keyboardController?.show()
+        if (isKeyboardShow){
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
+
     }
 
     LaunchedEffect(isClick) {

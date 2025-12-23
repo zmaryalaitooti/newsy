@@ -1,6 +1,7 @@
 package com.ahmadmaaz1.newsy.presentatoin.detail
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,8 @@ class DetailViewmodel @Inject constructor(val newsUseCause: NewsUseCause) : View
 
     var sideEffect by mutableStateOf<String>("")
         private set
+
+    var isAdsShow by mutableIntStateOf(0)
 
 
 

@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.ahmadmaaz1.newsy.R
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.presentatoin.component.NewsArticleList
-import com.ahmadmaaz1.newsy.presentatoin.home.BannerAdView
 import com.ahmadmaaz1.newsy.presentatoin.navgraph.Route
 
 @Composable
@@ -39,7 +38,6 @@ fun BookMarkScreen(
         NewsArticleList(article = state.articleList, onClick = { navigateToDetails.invoke(it) })
 
         Spacer(modifier = Modifier.height(8.dp))
-        BannerAdView()
         Spacer(modifier = Modifier.height(8.dp))
     }
 

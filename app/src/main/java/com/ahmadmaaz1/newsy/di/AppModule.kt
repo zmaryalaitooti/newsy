@@ -2,6 +2,7 @@ package com.ahmadmaaz1.newsy.di
 
 import android.app.Application
 import androidx.room.Room
+import com.ahmadmaaz1.newsy.data.local.MIGRATION_1_2
 import com.ahmadmaaz1.newsy.data.local.NewsDao
 import com.ahmadmaaz1.newsy.data.local.NewsDb
 import com.ahmadmaaz1.newsy.data.local.NewsTypeConverter
@@ -87,7 +88,7 @@ object AppModule {
             klass = NewsDb::class.java,
             name = "Newsdb.db",
         ).addTypeConverter(NewsTypeConverter())
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(true) // auto clear DB if schema mismatch
             .build()
     }
 
