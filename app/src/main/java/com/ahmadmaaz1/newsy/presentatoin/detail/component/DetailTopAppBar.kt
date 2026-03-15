@@ -29,7 +29,7 @@ import com.ahmadmaaz1.newsy.R
 fun DetailTopAppBar(
     isBookMar: String ,
     onBackClick: () -> Unit,
-    onBrowseClick: () -> Unit,
+//    onBrowseClick: () -> Unit,
     onShareClick: () -> Unit,
     onBookMarkClick: () -> Unit,
 ) {
@@ -64,13 +64,14 @@ fun DetailTopAppBar(
                 contentDescription = null,
             )
         }
-        IconButton(onClick = onBrowseClick) {
-            Icon(
-                painter = painterResource(R.drawable.browse),
-                contentDescription = null
-            )
-        }
-    })
+//        IconButton(onClick = onBrowseClick) {
+//            Icon(
+//                painter = painterResource(R.drawable.browse),
+//                contentDescription = null
+//            )
+//        }
+    }
+    )
 }
 
 
@@ -81,5 +82,5 @@ private fun DetailTopAppBarPreview() {
     Box(
         modifier = Modifier.background(MaterialTheme.colorScheme.background),
     ){
-        DetailTopAppBar("",{},{},{},{})}
+        DetailTopAppBar("",{},{},{})}
     }

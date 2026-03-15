@@ -11,6 +11,7 @@ plugins {
 
 
 android {
+
     namespace = "com.ahmadmaaz1.newsy"
     compileSdk = 35
 
@@ -18,8 +19,8 @@ android {
         applicationId = "com.ahmadmaaz1.newsy"
         minSdk = 23
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "2.22030"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,15 +34,25 @@ android {
             )
         }
     }
+
+    // ✅ IMPORTANT: Make Java 17 to match Kotlin 17
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+
     buildFeatures {
         compose = true
+    }
+}
+
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
 
@@ -57,6 +68,19 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
+
+    // testing
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.3")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.3")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
+
+    // 🔥 REQUIRED for Gradle 9+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.0.3")
+    // flow
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    // turbine
+    testImplementation("app.cash.turbine:turbine:1.2.1")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -101,6 +125,9 @@ dependencies {
     //ads
     //noinspection UseTomlInstead
     implementation("com.google.android.gms:play-services-ads:23.4.0")
+
+    // junit 5 jupiter
+
 
 
 

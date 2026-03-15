@@ -1,10 +1,16 @@
 package com.ahmadmaaz1.newsy.presentatoin.detail
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Build
+import android.webkit.CookieManager
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -26,10 +32,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.DetailEvent
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.DetailTopAppBar
 import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ahmadmaaz1.newsy.R
@@ -57,14 +65,14 @@ fun DetailScreen(
         DetailTopAppBar(
             isBookMar = viewmodel.sideEffect,
             onBackClick = navigateUp,
-            onBrowseClick = {
-                if (viewmodel.isAdsShow == 0) {
-                    InterstitialAdManager.showAd(
-                        activity = context,
-                        onAdsShow = { viewmodel.isAdsShow = it })
-                }
-                goBrowse(article = article, context = context)
-            },
+//            onBrowseClick = {
+//                if (viewmodel.isAdsShow == 0) {
+//                    InterstitialAdManager.showAd(
+//                        activity = context,
+//                        onAdsShow = { viewmodel.isAdsShow = it })
+//                }
+//                goBrowse(article = article, context = context)
+//            },
             onShareClick = {
                 if (viewmodel.isAdsShow == 0) {
                     InterstitialAdManager.showAd(
@@ -82,58 +90,61 @@ fun DetailScreen(
             onBookMarkClick = { event(DetailEvent.SaveOrDeleteArticle(article)) }
         )
 
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(
-                start = 24.dp,//mediumpadding1
-                end = 24.dp,//
-                top = 24.dp
-            ),
-        ) {
-            item {
-                AsyncImage(
-                    model = ImageRequest.Builder(context = context).data(article.urlToImage)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.medium)
-                        .height(250.dp),//articleImageHeight
-                    contentScale = ContentScale.Crop
-                )
+        WebViewScreen(url = article.url)
 
-                Spacer(
-                    Modifier.height(24.dp)//medium padding1
-                )
 
-                Text(
-                    style = MaterialTheme.typography.displaySmall,
-                    text = article.title.toString(),
-                    color = colorResource(R.color.teal_700)//textTitle
-                )
-
-                Text(
-                    style = MaterialTheme.typography.bodyMedium,
-                    text = article.content.toString(),
-                    color = colorResource(R.color.black)//body
-                )
-
-                Text(
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .clickable(enabled = true, onClick = {
-                            if (viewmodel.isAdsShow == 0){
-                                InterstitialAdManager.showAd(activity = context, onAdsShow = {viewmodel.isAdsShow = 1})
-                            }
-                            goBrowse(article = article, context = context)
-                        }),
-                    text = "More...",
-                    color = MaterialTheme.colorScheme.primary//body
-                )
-            }
-
-        }
+//        LazyColumn(
+//            modifier = Modifier.fillMaxWidth(),
+//            contentPadding = PaddingValues(
+//                start = 24.dp,//mediumpadding1
+//                end = 24.dp,//
+//                top = 24.dp
+//            ),
+//        ) {
+//            item {
+//                AsyncImage(
+//                    model = ImageRequest.Builder(context = context).data(article.urlToImage)
+//                        .build(),
+//                    contentDescription = null,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .clip(MaterialTheme.shapes.medium)
+//                        .height(250.dp),//articleImageHeight
+//                    contentScale = ContentScale.Crop
+//                )
+//
+//                Spacer(
+//                    Modifier.height(24.dp)//medium padding1
+//                )
+//
+//                Text(
+//                    style = MaterialTheme.typography.displaySmall,
+//                    text = article.title.toString(),
+//                    color = colorResource(R.color.teal_700)//textTitle
+//                )
+//
+//                Text(
+//                    style = MaterialTheme.typography.bodyMedium,
+//                    text = article.content.toString(),
+//                    color = colorResource(R.color.black)//body
+//                )
+//
+//                Text(
+//                    style = MaterialTheme.typography.bodyLarge,
+//                    modifier = Modifier
+//                        .padding(12.dp)
+//                        .clickable(enabled = true, onClick = {
+//                            if (viewmodel.isAdsShow == 0){
+//                                InterstitialAdManager.showAd(activity = context, onAdsShow = {viewmodel.isAdsShow = 1})
+//                            }
+//                            goBrowse(article = article, context = context)
+//                        }),
+//                    text = "More...",
+//                    color = MaterialTheme.colorScheme.primary//body
+//                )
+//            }
+//
+//        }
     }
 
 }
@@ -153,20 +164,62 @@ private fun goBrowse(article: Article, context: Context) {
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun DetailScreenPreview() {
-//    DetailScreen(
-//        viewmodel = ,
-//        article = Article(
-//            author = null,
-//            content = "ksjdkfjkdjskfjdsjfjkdjkfjk",
-//            title = "news ",
-//            publishedAt = null,
-//            description = null,
-//            source = Source(null,null),
-//            urlToImage = "jdskfj",
-//            url = "dkf"
-//        ),
-//        event = {},
-//        navigateUp = {},
-//    )
-//
+    DetailScreen(
+        viewmodel = hiltViewModel(),
+        article = Article(
+            author = null,
+            content = "ksjdkfjkdjskfjdsjfjkdjkfjk",
+            title = "news ",
+            publishedAt = null,
+            description = null,
+            source = Source(null,null),
+            urlToImage = "jdskfj",
+            url = "dkf"
+        ),
+        event = {},
+        navigateUp = {},
+    )
+
+}
+
+
+
+
+@SuppressLint("SetJavaScriptEnabled")
+@Composable
+fun WebViewScreen(url: String) {
+    AndroidView(factory = { context ->
+        WebView(context).apply {
+            // Disable cookies (both first and third party)
+            CookieManager.getInstance().setAcceptCookie(false)
+            CookieManager.getInstance().setAcceptThirdPartyCookies(this, false)
+
+            webViewClient = WebViewClient()
+
+            settings.apply {
+                javaScriptEnabled = false               // Disable JavaScript
+                domStorageEnabled = false               // Disable DOM storage (localStorage/sessionStorage)
+                cacheMode = WebSettings.LOAD_NO_CACHE   // Disable caching
+//                setAppCacheEnabled(false)
+                loadsImagesAutomatically = true        // Disable image loading
+                databaseEnabled = false
+                savePassword = false
+                saveFormData = false
+                setSupportZoom(false)
+                builtInZoomControls = false
+                displayZoomControls = false
+                allowFileAccess = false
+                allowContentAccess = false
+                setGeolocationEnabled(false)
+                mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+                userAgentString = "SecureWebView"       // Override user agent
+            }
+
+            clearCache(true)
+            clearHistory()
+            clearFormData()
+
+            loadUrl(url)
+        }
+    })
 }

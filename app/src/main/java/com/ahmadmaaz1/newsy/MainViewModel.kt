@@ -33,3 +33,6 @@ class MainViewModel @Inject() constructor(val appEntryUseCause: AppEntryUseCause
         }.launchIn(viewModelScope)
     }
 }
+
+
+

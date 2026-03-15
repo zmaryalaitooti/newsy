@@ -1,5 +1,7 @@
 package com.ahmadmaaz1.newsy.presentatoin.component
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.ahmadmaaz1.newsy.domain.model.Article
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsArticleList(
     modifier: Modifier = Modifier,
@@ -39,6 +41,7 @@ fun NewsArticleList(
 
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsArticleList(
     modifier: Modifier = Modifier,
@@ -53,9 +56,9 @@ fun NewsArticleList(
         {
             items(count = article.itemCount) {
                 // Show a native ad every 5 items
-                if ((it + 1) % 5 == 0) {
-                    NativeAdComposable()
-                }
+//                if ((it + 1) % 5 == 0) {
+//                    NativeAdComposable()
+//                }
                 article[it]?.let {
                     ArticleCard(article = it, onClick = {onClick(it)})
                 }
