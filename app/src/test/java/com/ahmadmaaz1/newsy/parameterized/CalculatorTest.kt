@@ -21,7 +21,7 @@ class CalculatorTest {
 
 
     @ParameterizedTest
-    @CsvSource("2,4,8","3,3,5","3,4,12")
+    @CsvSource("2,4,8","3,3,9","3,4,12")
     fun testMulti(a: Int, b: Int, result: Int){
         assertEquals(a*b,result)
     }
@@ -42,7 +42,7 @@ companion object {
         @JvmStatic
         fun provideNumbers() = listOf(
             Arguments.of(1, 2, 3),
-            Arguments.of(5, 5, 12),
+            Arguments.of(5, 5, 10),
             Arguments.of(3, 4, 7)
         )
     }

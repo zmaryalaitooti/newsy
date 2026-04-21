@@ -41,7 +41,7 @@ class FlowTest {
         numberFlow().test {
             assertEquals(1,awaitItem())
             assertEquals(0,awaitItem())
-            assertEquals(9,awaitItem())
+            assertEquals(3,awaitItem())
             awaitComplete()
         }
     }
