@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     // dagger hilt
     id("org.jetbrains.kotlin.kapt")
-    id ("com.google.dagger.hilt.android")
+    id("com.google.dagger.hilt.android")
 
     id("kotlin-parcelize")
 }
@@ -80,6 +80,14 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     // turbine
     testImplementation("app.cash.turbine:turbine:1.2.1")
+    // compose test
+
+//    val composeBom = "2024.06.00"
+//
+//     Test rules and transitive dependencies:
+//    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+// Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():
+//    debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -94,7 +102,7 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
 
     // dagger hilt setup
-    implementation ("com.google.dagger:hilt-android:2.56.2")
+    implementation("com.google.dagger:hilt-android:2.56.2")
     kapt("com.google.dagger:hilt-compiler:2.56.2")
     kapt("com.google.dagger:hilt-android-compiler:2.56.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -115,11 +123,11 @@ dependencies {
     //dataStore preferences
     implementation("androidx.datastore:datastore-preferences:1.1.6")
     // Accompanist
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.35.0-alpha")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.35.0-alpha")
 
     /// PAGING ////
-    implementation( "androidx.paging:paging-runtime:3.3.6")
-    implementation( "androidx.paging:paging-compose:3.2.1")
+    implementation("androidx.paging:paging-runtime:3.3.6")
+    implementation("androidx.paging:paging-compose:3.2.1")
 
 
     //ads
@@ -129,10 +137,7 @@ dependencies {
     // junit 5 jupiter
 
 
-
-
-
 }
-kapt{
+kapt {
     correctErrorTypes = true
 }
