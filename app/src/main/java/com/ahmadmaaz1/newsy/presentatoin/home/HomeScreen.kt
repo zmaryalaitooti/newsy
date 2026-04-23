@@ -51,7 +51,6 @@ import com.google.android.gms.ads.AdView
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("RememberReturnType")
 @Composable
 fun HomeScreen(
