@@ -17,7 +17,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.ahmadmaaz1.newsy.domain.model.Article
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsArticleList(
     modifier: Modifier = Modifier,
