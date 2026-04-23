@@ -44,8 +44,9 @@ import com.ahmadmaaz1.newsy.presentatoin.component.getTimeAgo
 import com.ahmadmaaz1.newsy.ui.theme.NewsyTheme
 import java.time.Duration
 import java.time.Instant
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ArticleCard(modifier: Modifier = Modifier, article: Article, onClick: () -> Unit) {
     val context = LocalContext.current
@@ -98,41 +99,45 @@ fun ArticleCard(modifier: Modifier = Modifier, article: Article, onClick: () -> 
 
 
 
-@RequiresApi(Build.VERSION_CODES.O)
-private fun RowScope.getTimeAgo(isoDate: String): String {
-    // Parse the input date
-    val time = Instant.parse(isoDate)
-    val now = Instant.now()
+public fun getTimeAgo(isoDate: String): String {
+    return try {
 
-    // Calculate difference
-    val duration = Duration.between(time, now)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val time = ZonedDateTime.parse(isoDate)
+            val now = ZonedDateTime.now()
 
-    val seconds = duration.seconds
-    val minutes = seconds / 60
-    val hours = minutes / 60
-    val days = hours / 24
-    val months = days / 30
-    val years = days / 365
+            val years = ChronoUnit.YEARS.between(time, now)
+            val months = ChronoUnit.MONTHS.between(time, now)
+            val days = ChronoUnit.DAYS.between(time, now)
+            val hours = ChronoUnit.HOURS.between(time, now)
+            val minutes = ChronoUnit.MINUTES.between(time, now)
+            val seconds = ChronoUnit.SECONDS.between(time, now)
 
-    return when {
-        seconds < 60 -> "${seconds}s ago"
-        minutes < 60 -> "${minutes}m ago"
-        hours < 24 -> "${hours}h ago"
-        days < 30 -> "${days}d ago"
-        months < 12 -> "${months}mo ago"
-        else -> "${years}y ago"
+            when {
+                seconds < 60 -> "${seconds}s ago"
+                minutes < 60 -> "${minutes}m ago"
+                hours < 24 -> "${hours}h ago"
+                days < 30 -> "${days}d ago"
+                months < 12 -> "${months}mo ago"
+                else -> "${years}y ago"
+            }
+        }
+        else
+            ""
+
+    } catch (e: Exception) {
+        ""
     }
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 private fun ArticleCardPreview() {
     NewsyTheme {
         ArticleCard(
-            Modifier, article = Article(author = null,content = null,description = null,publishedAt = "2h", source = Source(name = "khan", id = null), title = "new news ",url = "i", urlToImage = "dkji")
+            Modifier, article = Article(author = null,content = null,description = null,publishedAt = "2026-04-23T10:00:00Z", source = Source(name = "khan", id = null), title = "new news ",url = "i", urlToImage = "dkji")
         ) { }
     }
 }

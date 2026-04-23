@@ -41,7 +41,6 @@ fun NewsArticleList(
 
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewsArticleList(
     modifier: Modifier = Modifier,
@@ -54,7 +53,7 @@ fun NewsArticleList(
             horizontalAlignment = Alignment.CenterHorizontally,
             contentPadding = PaddingValues(all = 11.dp))//extraSmall
         {
-            items(count = article.itemCount) {
+            items(count = article.itemCount) { it ->
                 // Show a native ad every 5 items
 //                if ((it + 1) % 5 == 0) {
 //                    NativeAdComposable()
@@ -100,7 +99,7 @@ fun handlePagingResult(article: LazyPagingItems<Article>) : Boolean{
 @Composable
 private fun ShimmerEffect() {// dimension
     Column(verticalArrangement = Arrangement.spacedBy(22.dp)) {
-        repeat(10) {//dimention
+        repeat(10) {//dimension
             ArticleCardShimmerEffect(modifier = Modifier.padding(horizontal = 22.dp))
         }
     }

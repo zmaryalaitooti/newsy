@@ -52,6 +52,7 @@ tasks.withType<Test>().configureEach {
 
 kotlin {
     compilerOptions {
+
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
@@ -134,7 +135,9 @@ dependencies {
     //noinspection UseTomlInstead
     implementation("com.google.android.gms:play-services-ads:23.4.0")
 
-    // junit 5 jupiter
+    //kotest
+    testImplementation("io.kotest:kotest-runner-junit5:5.9.0")
+    testImplementation("io.kotest:kotest-assertions-core:5.9.0")
 
 
 }
