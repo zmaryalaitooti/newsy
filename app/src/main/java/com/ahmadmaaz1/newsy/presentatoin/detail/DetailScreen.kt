@@ -44,7 +44,6 @@ import com.ahmadmaaz1.newsy.R
 import com.ahmadmaaz1.newsy.domain.model.Source
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.InterstitialAdManager
 
-@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun DetailScreen(
     viewmodel: DetailViewmodel,
@@ -80,7 +79,7 @@ fun DetailScreen(
                         onAdsShow = { viewmodel.isAdsShow = it })
                 }
                 Intent(Intent.ACTION_SEND).also {
-                    it.putExtra(Intent.EXTRA_TIME, article.url)
+                    it.putExtra(Intent.EXTRA_TEXT, article.url)
                     it.type = "text/plain"
                     if (it.resolveActivity(context.packageManager) != null) {
                         context.startActivity(it)
@@ -159,7 +158,6 @@ private fun goBrowse(article: Article, context: Context) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.R)
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
