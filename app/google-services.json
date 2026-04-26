@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "311456875869",
+    "project_id": "chat-notification-73cc7",
+    "storage_bucket": "chat-notification-73cc7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311456875869:android:d7bf3902ad00a9f545d4b4",
+        "android_client_info": {
+          "package_name": "com.ahmadmaaz1.newsy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRln3WVOK7OqGkcbv4UbR31nJvOrXeFOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311456875869:android:eac83cb65197972145d4b4",
+        "android_client_info": {
+          "package_name": "com.tootisabz.chatnotification"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRln3WVOK7OqGkcbv4UbR31nJvOrXeFOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
