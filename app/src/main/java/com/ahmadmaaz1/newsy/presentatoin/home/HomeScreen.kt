@@ -1,7 +1,6 @@
 package com.ahmadmaaz1.newsy.presentatoin.home
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -14,21 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.paging.compose.LazyPagingItems
 import com.ahmadmaaz1.newsy.domain.model.Article
@@ -36,8 +23,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -45,31 +30,23 @@ import com.ahmadmaaz1.newsy.R
 import com.ahmadmaaz1.newsy.presentatoin.component.NewsArticleList
 import com.ahmadmaaz1.newsy.presentatoin.component.SearchBar
 import com.ahmadmaaz1.newsy.presentatoin.home.componet.TopBarMenu
+import com.ahmadmaaz1.newsy.presentatoin.newscategory.NewsCategoryScreen
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("RememberReturnType")
 @Composable
 fun HomeScreen(
     article: LazyPagingItems<Article>,
+    viewModel: HomeViewModel,
     navigatorToDetail: (Article) -> Unit,
     navigatorToSearch: () -> Unit
 ) {
-    val title by remember {
-        derivedStateOf {
-            if (article.itemCount >= 10) {
-                article.itemSnapshotList.items
-                    .take(10)
-                    .joinToString(separator = " \uD83D\uDFE5") { it.title.orEmpty() }
-            } else {
-                ""
-            }
-        }
-    }
+
     TopBarMenu()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -108,28 +85,18 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
 
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .basicMarquee(),
-            text = title.toString().uppercase(),
-            style = MaterialTheme.typography.headlineSmall.copy(
-                color = MaterialTheme.colorScheme.onSurface
-            )
+        NewsCategoryScreen(
+            { viewModel.onCategoryChange(it) },
+            selectedCategory = viewModel.selectedCategory.collectAsState().value
         )
-
-//        Spacer(Modifier.height(4.dp))//mediumPadding
 
         NewsArticleList(
             modifier = Modifier,
             article = article,
             onClick = { navigatorToDetail.invoke(it) })
 
-
     }
-
 }
-
 @Composable
 fun BannerAdView() {
     AndroidView(
@@ -138,7 +105,8 @@ fun BannerAdView() {
             val adView = AdView(context)
             adView.adUnitId = "ca-app-pub-8992718827220232/3361878081"
             val adSize = AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(
-                context, (context.resources.displayMetrics.widthPixels / context.resources.displayMetrics.density).toInt()
+                context,
+                (context.resources.displayMetrics.widthPixels / context.resources.displayMetrics.density).toInt()
             )
             adView.setAdSize(adSize)
             adView.loadAd(AdRequest.Builder().build())

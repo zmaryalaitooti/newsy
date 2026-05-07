@@ -63,7 +63,8 @@ fun TopBarMenu() {
                 "News Channel" -> {
                     NewsChannelSheet(
                         onDismiss = { activeSheet = null },
-                        sheetState = bottomSheetState
+                        sheetState = bottomSheetState,
+                        onAddSourceClick = {  }
                     )
                 }
 

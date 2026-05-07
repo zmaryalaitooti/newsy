@@ -2,46 +2,42 @@ package com.ahmadmaaz1.newsy.presentatoin.detail
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import android.os.Build
+import android.graphics.Bitmap
 import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import coil.compose.AsyncImage
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.DetailEvent
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.DetailTopAppBar
-import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.ahmadmaaz1.newsy.R
-import com.ahmadmaaz1.newsy.domain.model.Source
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.InterstitialAdManager
 
 @Composable
@@ -53,7 +49,11 @@ fun DetailScreen(
 ) {
     val context = LocalContext.current
 
+    var showWebView by remember { mutableStateOf(false) }
+    var isLoadingWeb by remember { mutableStateOf(false) }
+
     InterstitialAdManager.loadAd(context as Activity)
+
 
     Column(
         modifier = Modifier
@@ -64,139 +64,117 @@ fun DetailScreen(
         DetailTopAppBar(
             isBookMar = viewmodel.sideEffect,
             onBackClick = navigateUp,
-//            onBrowseClick = {
-//                if (viewmodel.isAdsShow == 0) {
-//                    InterstitialAdManager.showAd(
-//                        activity = context,
-//                        onAdsShow = { viewmodel.isAdsShow = it })
-//                }
-//                goBrowse(article = article, context = context)
-//            },
             onShareClick = {
                 if (viewmodel.isAdsShow == 0) {
                     InterstitialAdManager.showAd(
-                        activity = context,
+                        activity =  context as Activity,
                         onAdsShow = { viewmodel.isAdsShow = it })
                 }
-                Intent(Intent.ACTION_SEND).also {
-                    it.putExtra(Intent.EXTRA_TEXT, article.url)
-                    it.type = "text/plain"
-                    if (it.resolveActivity(context.packageManager) != null) {
-                        context.startActivity(it)
-                    }
+                Intent(Intent.ACTION_SEND).apply {
+                    putExtra(Intent.EXTRA_TEXT, article.url)
+                    type = "text/plain"
+                    context.startActivity(this)
                 }
             },
-            onBookMarkClick = { event(DetailEvent.SaveOrDeleteArticle(article)) }
+            onBookMarkClick = {
+                event(DetailEvent.SaveOrDeleteArticle(article))
+            }
         )
 
-        WebViewScreen(url = article.url)
+        if (!showWebView) {
 
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp)
+            ) {
 
-//        LazyColumn(
-//            modifier = Modifier.fillMaxWidth(),
-//            contentPadding = PaddingValues(
-//                start = 24.dp,//mediumpadding1
-//                end = 24.dp,//
-//                top = 24.dp
-//            ),
-//        ) {
-//            item {
-//                AsyncImage(
-//                    model = ImageRequest.Builder(context = context).data(article.urlToImage)
-//                        .build(),
-//                    contentDescription = null,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .clip(MaterialTheme.shapes.medium)
-//                        .height(250.dp),//articleImageHeight
-//                    contentScale = ContentScale.Crop
-//                )
-//
-//                Spacer(
-//                    Modifier.height(24.dp)//medium padding1
-//                )
-//
-//                Text(
-//                    style = MaterialTheme.typography.displaySmall,
-//                    text = article.title.toString(),
-//                    color = colorResource(R.color.teal_700)//textTitle
-//                )
-//
-//                Text(
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    text = article.content.toString(),
-//                    color = colorResource(R.color.black)//body
-//                )
-//
-//                Text(
-//                    style = MaterialTheme.typography.bodyLarge,
-//                    modifier = Modifier
-//                        .padding(12.dp)
-//                        .clickable(enabled = true, onClick = {
-//                            if (viewmodel.isAdsShow == 0){
-//                                InterstitialAdManager.showAd(activity = context, onAdsShow = {viewmodel.isAdsShow = 1})
-//                            }
-//                            goBrowse(article = article, context = context)
-//                        }),
-//                    text = "More...",
-//                    color = MaterialTheme.colorScheme.primary//body
-//                )
-//            }
-//
-//        }
-    }
+                item {
 
-}
+                    AsyncImage(
+                        model = article.urlToImage,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                            .clip(MaterialTheme.shapes.medium),
+                        contentScale = ContentScale.Crop
+                    )
 
+                    Spacer(Modifier.height(16.dp))
 
-private fun goBrowse(article: Article, context: Context) {
-    Intent(Intent.ACTION_VIEW).also {
-        it.data = article.url.toUri()
-        if (it.resolveActivity(context.packageManager) != null) {
-            context.startActivity(it)
+                    Text(
+                        text = article.title.orEmpty(),
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    Spacer(Modifier.height(8.dp))
+
+                    Text(
+                        text = article.content.orEmpty(),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+
+                    Spacer(Modifier.height(16.dp))
+
+                    Text(
+                        text = "Read Full Article →",
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.clickable {
+                            if (viewmodel.isAdsShow == 0){
+                                 InterstitialAdManager.showAd(activity = context as Activity, onAdsShow = {viewmodel.isAdsShow = 1})
+                             }
+                            showWebView = true
+                        }
+                    )
+                }
+            }
+
+        } else {
+
+            Box(modifier = Modifier.fillMaxSize()) {
+
+                WebViewScreen(
+                    url = article.url,
+                    onLoading = { isLoadingWeb = it }
+                )
+
+                if (isLoadingWeb) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun DetailScreenPreview() {
-    DetailScreen(
-        viewmodel = hiltViewModel(),
-        article = Article(
-            author = null,
-            content = "ksjdkfjkdjskfjdsjfjkdjkfjk",
-            title = "news ",
-            publishedAt = null,
-            description = null,
-            source = Source(null,null),
-            urlToImage = "jdskfj",
-            url = "dkf"
-        ),
-        event = {},
-        navigateUp = {},
-    )
-
-}
-
-
-
-
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun WebViewScreen(url: String) {
+fun WebViewScreen(
+    url: String,
+    onLoading: (Boolean) -> Unit
+) {
     AndroidView(factory = { context ->
         WebView(context).apply {
             // Disable cookies (both first and third party)
             CookieManager.getInstance().setAcceptCookie(false)
             CookieManager.getInstance().setAcceptThirdPartyCookies(this, false)
 
-            webViewClient = WebViewClient()
+            webViewClient = object : WebViewClient(){
+
+                override fun onPageStarted(view: WebView?, url: String?, favicon: android.graphics.Bitmap?) {
+                    onLoading(true)
+                }
+
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    onLoading(false)
+                }
+            }
 
             settings.apply {
                 javaScriptEnabled = false               // Disable JavaScript
-                domStorageEnabled = false               // Disable DOM storage (localStorage/sessionStorage)
+                domStorageEnabled =
+                    false               // Disable DOM storage (localStorage/sessionStorage)
                 cacheMode = WebSettings.LOAD_NO_CACHE   // Disable caching
 //                setAppCacheEnabled(false)
                 loadsImagesAutomatically = true        // Disable image loading

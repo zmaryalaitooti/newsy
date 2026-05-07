@@ -92,7 +92,6 @@ fun NewsNavigator() {
                                 route = Route.BookMarkScreen.route
                             )
 
-//                      else -> Route.HomeScreen.route
                         }
                     },
 
@@ -114,6 +113,7 @@ fun NewsNavigator() {
                 val article = viewModel.news.collectAsLazyPagingItems()
                 HomeScreen(
                     article = article,
+                   viewModel = viewModel,
                     navigatorToDetail = {
                         navigateToDetails(
                             navController = navController,

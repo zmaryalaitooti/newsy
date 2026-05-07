@@ -17,7 +17,7 @@ class NewsPagingDataSource(val newsApi: NewsApi, val sources: String) :
 
         return try {
 
-            val result = newsApi.getNews(page = page, sources = sources)
+            val result = newsApi.getNews(page = page, category = sources)
 
             if (result.isSuccessful && result.body() != null) {
                 totalNewsCount += result.body()?.totalResults ?: 0

@@ -1,5 +1,6 @@
 package com.ahmadmaaz1.newsy.data.repositoryt
 
+import android.R
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -12,11 +13,11 @@ import com.ahmadmaaz1.newsy.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
 
 class RepositoryIml(val newsApi: NewsApi, val newsDao: NewsDao) : Repository {
-    override fun getNews(sources: List<String?>?): Flow<PagingData<Article>> {
+    override fun getNews(category: String): Flow<PagingData<Article>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
-                NewsPagingDataSource(newsApi = newsApi, sources?.joinToString(",") ?: "")
+                NewsPagingDataSource(newsApi = newsApi, category)
             }
         ).flow
     }
