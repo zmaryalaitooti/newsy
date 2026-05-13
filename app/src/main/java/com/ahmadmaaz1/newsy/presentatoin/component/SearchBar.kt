@@ -1,5 +1,6 @@
 package com.ahmadmaaz1.newsy.presentatoin.component
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.util.Log
 import androidx.compose.foundation.border
@@ -40,7 +41,7 @@ private const val TAG = "SearchBar"
 
 @Composable
 fun SearchBar(
-    isKeyboardShow : Boolean = false,
+    isKeyboardShow: Boolean = false,
     modifier: Modifier = Modifier,
     onclick: () -> Unit,
     text: String,
@@ -57,7 +58,7 @@ fun SearchBar(
     // 🔥 Automatically request focus when entering the screen
     LaunchedEffect(Unit) {
         delay(200) // small delay for smoother UI transition
-        if (isKeyboardShow){
+        if (isKeyboardShow) {
             focusRequester.requestFocus()
             keyboardController?.show()
         }
@@ -92,8 +93,10 @@ fun SearchBar(
             },
             readOnly = readOnly,
             leadingIcon = {
-                IconButton(onClick = { onSearch.invoke()
-                    Log.d(TAG, "SearchBar: leading icon clicked ")}) {
+                IconButton(onClick = {
+                    onSearch.invoke()
+                    Log.d(TAG, "SearchBar: leading icon clicked ")
+                }) {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search"

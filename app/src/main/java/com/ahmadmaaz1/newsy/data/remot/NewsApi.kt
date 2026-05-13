@@ -7,20 +7,26 @@ import retrofit2.http.Query
 
 interface NewsApi {
 
-    @GET("top-headlines")
+    @GET("everything")
     suspend fun getNews(
         @Query("page") page: Int,
-        @Query("category") category: String,
-        @Query("apikey") apikey : String = "d933269afaaa4718bf2b2432db1d9b2e"
+        @Query("sources") sources: String,
+        @Query("apikey") apikey: String = "d933269afaaa4718bf2b2432db1d9b2e"
     ): Response<NewsResponse>
 
+    @GET("top-headlines")
+    suspend fun getNewsWithCategory(
+        @Query("page") page: Int,
+        @Query("category") category: String,
+        @Query("apikey") apikey: String = "d933269afaaa4718bf2b2432db1d9b2e"
+    ): Response<NewsResponse>
 
     @GET("everything")
     suspend fun getNewsSearch(
         @Query("page") page: Int,
         @Query("q") searchQuery: String,
         @Query("sources") sources: String,
-        @Query("apikey") apikey : String = "d933269afaaa4718bf2b2432db1d9b2e"
+        @Query("apikey") apikey: String = "d933269afaaa4718bf2b2432db1d9b2e"
     ): Response<NewsResponse>
 
 }

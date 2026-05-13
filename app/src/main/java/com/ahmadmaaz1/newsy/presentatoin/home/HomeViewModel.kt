@@ -19,6 +19,19 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) : ViewModel() {
 
+    val newsSources = listOf(
+        "bbc-news",
+        "cnn",
+        "abc-news",
+        "al-jazeera-english",
+        "associated-press",
+        "reuters",
+        "fox-news",
+        "google-news",
+        "the-verge",
+        "national-geographic",
+        "medical-news-today",
+    )
     private val _selectedCategory =
         MutableStateFlow(
             NewsCategory("All", "general")
@@ -34,7 +47,12 @@ class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) 
     @OptIn(ExperimentalCoroutinesApi::class)
     val news = selectedCategory
         .flatMapLatest { category ->
-            newsUseCause.getNews(category.apiValue)
+            if (category.apiValue == "general"){
+                newsUseCause.getNews.getNews(source =newsSources.joinToString(","))
+            }
+            else{
+                newsUseCause.getNews(category.apiValue)
+            }
         }
         .cachedIn(viewModelScope)
 

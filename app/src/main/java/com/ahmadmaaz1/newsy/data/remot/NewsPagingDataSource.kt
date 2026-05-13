@@ -16,8 +16,12 @@ class NewsPagingDataSource(val newsApi: NewsApi, val sources: String) :
         val page = params.key ?: 1
 
         return try {
+            val result = if (sources.contains("bbc")) {
+                newsApi.getNews(page = page, sources = sources)
+            } else {
+                newsApi.getNewsWithCategory(page = page, category = sources)
 
-            val result = newsApi.getNews(page = page, category = sources)
+            }
 
             if (result.isSuccessful && result.body() != null) {
                 totalNewsCount += result.body()?.totalResults ?: 0

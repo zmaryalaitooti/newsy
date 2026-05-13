@@ -7,7 +7,11 @@ import kotlinx.coroutines.flow.Flow
 
 class GetNews(val repository: Repository) {
 
+    fun getNews (source: String): Flow<PagingData<Article>>{
+        return repository.getNews(source)
+    }
+
     operator fun invoke (category: String): Flow<PagingData<Article>>{
-        return repository.getNews(category)
+        return repository.getNewsWithCategory(category)
     }
 }

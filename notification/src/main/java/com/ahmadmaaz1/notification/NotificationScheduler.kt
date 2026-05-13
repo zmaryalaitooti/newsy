@@ -16,7 +16,7 @@ object NotificationScheduler {
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(10, TimeUnit.SECONDS)
+        val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(2, TimeUnit.DAYS)
             .setConstraints(constraints)
             .build()
 
