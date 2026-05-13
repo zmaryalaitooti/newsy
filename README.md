@@ -17,13 +17,9 @@ It delivers the latest news from multiple sources with beautiful UI, smooth pagi
 - 📱 **Responsive UI** – supports all Android screen sizes  
 - 💰 **AdMob Integration**  
   - Banner Ads  
-  - Native Ads  
-  - Rewarded Ads  
+  - Native Ads
 - ⚡ **Shimmer Loading** while fetching articles  
-- 🧭 **Navigation Component with Compose**  
-- 🔔 **Firebase Cloud Messaging (FCM)** (for notifications, optional)
-
----
+- 🧭 **Navigation Component with Compose**
 
 ## 🏗️ Tech Stack
 
