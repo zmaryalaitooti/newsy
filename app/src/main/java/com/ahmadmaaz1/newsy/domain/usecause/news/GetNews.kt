@@ -11,6 +11,10 @@ class GetNews(val repository: Repository) {
         return repository.getNews(source)
     }
 
+    suspend fun getBreakingNews(): List<Article>{
+        return repository.getBreakingNews()
+    }
+
     operator fun invoke (category: String): Flow<PagingData<Article>>{
         return repository.getNewsWithCategory(category)
     }

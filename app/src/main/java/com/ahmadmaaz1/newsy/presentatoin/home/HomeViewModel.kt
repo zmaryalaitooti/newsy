@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +34,11 @@ class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) 
         "national-geographic",
         "medical-news-today",
     )
+
+    private val _breakingNews = MutableStateFlow<List<Article>>(emptyList())
+    val breakingNews = _breakingNews.asStateFlow()
+
+
     private val _selectedCategory =
         MutableStateFlow(
             NewsCategory("All", "general")
@@ -55,6 +62,22 @@ class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) 
             }
         }
         .cachedIn(viewModelScope)
+
+
+
+
+
+
+    private fun getBreakingNews() {
+        viewModelScope.launch {
+            try {
+
+                _breakingNews.value = newsUseCause.getNews.getBreakingNews().toList()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
 
 }

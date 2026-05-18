@@ -9,6 +9,8 @@ interface Repository {
     fun getNews(source: String): Flow<PagingData<Article>>
     fun getNewsWithCategory(category: String): Flow<PagingData<Article>>
 
+    suspend fun getBreakingNews(): List<Article>
+
     fun getNewsSearch(
         searchQuery: String?,
         sources: List<String?>?

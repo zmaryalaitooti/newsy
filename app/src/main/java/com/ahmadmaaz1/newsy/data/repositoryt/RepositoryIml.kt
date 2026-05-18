@@ -1,6 +1,5 @@
 package com.ahmadmaaz1.newsy.data.repositoryt
 
-import android.R
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -11,6 +10,8 @@ import com.ahmadmaaz1.newsy.data.remot.NewsSearchPagingDataSource
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.domain.repository.Repository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emptyFlow
 
 class RepositoryIml(val newsApi: NewsApi, val newsDao: NewsDao) : Repository {
     override fun getNews(source: String): Flow<PagingData<Article>> {
@@ -22,13 +23,24 @@ class RepositoryIml(val newsApi: NewsApi, val newsDao: NewsDao) : Repository {
         ).flow
     }
 
+    override suspend fun getBreakingNews(): List<Article> {
+        val result = newsApi.getBreakingNews()
+        return if (result.isSuccessful && result.body() != null) {
+             result.body()!!.articles
+        } else
+             emptyList()
+
+    }
+
     override fun getNewsWithCategory(category: String): Flow<PagingData<Article>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
             pagingSourceFactory = {
                 NewsPagingDataSource(newsApi = newsApi, category)
             }
-        ).flow    }
+        ).flow
+    }
+
 
     override fun getNewsSearch(
         searchQuery: String?,
@@ -54,7 +66,7 @@ class RepositoryIml(val newsApi: NewsApi, val newsDao: NewsDao) : Repository {
         newsDao.deleteArticle(article)
     }
 
-    override  fun getArticles(): Flow<List<Article>> {
+    override fun getArticles(): Flow<List<Article>> {
         return newsDao.selectArticles()
     }
 
