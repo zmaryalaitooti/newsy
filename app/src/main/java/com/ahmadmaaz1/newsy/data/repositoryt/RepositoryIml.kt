@@ -1,5 +1,6 @@
 package com.ahmadmaaz1.newsy.data.repositoryt
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -26,9 +27,14 @@ class RepositoryIml(val newsApi: NewsApi, val newsDao: NewsDao) : Repository {
     override suspend fun getBreakingNews(): List<Article> {
         val result = newsApi.getBreakingNews()
         return if (result.isSuccessful && result.body() != null) {
+            Log.d("HomeViewModel", "getBreakingNews: ${result.code()} ")
+
              result.body()!!.articles
-        } else
-             emptyList()
+        } else{
+            Log.d("HomeViewModel", "getBreakingNews in else : ${result.code()} ")
+            emptyList()
+        }
+
 
     }
 

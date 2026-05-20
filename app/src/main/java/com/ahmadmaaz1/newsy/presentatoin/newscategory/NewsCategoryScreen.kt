@@ -1,6 +1,15 @@
 package com.ahmadmaaz1.newsy.presentatoin.newscategory
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.BusinessCenter
+import androidx.compose.material.icons.rounded.Favorite
+import androidx.compose.material.icons.rounded.Memory
+import androidx.compose.material.icons.rounded.Movie
+import androidx.compose.material.icons.rounded.Public
+import androidx.compose.material.icons.rounded.Science
+import androidx.compose.material.icons.rounded.SmartToy
+import androidx.compose.material.icons.rounded.SportsSoccer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,13 +26,54 @@ fun NewsCategoryScreen(
 ) {
 
     val categories = listOf(
-        NewsCategory("All", "general"),
-        NewsCategory("Business", "business"),
-        NewsCategory("Technology", "technology"),
-        NewsCategory("Sports", "sports"),
-        NewsCategory("Health", "health"),
-        NewsCategory("Science", "science"),
-        NewsCategory("Entertainment", "entertainment")
+
+        NewsCategory(
+            "All",
+            "general",
+            Icons.Rounded.Public
+        ),
+
+        NewsCategory(
+            "Business",
+            "business",
+            Icons.Rounded.BusinessCenter
+        ),
+
+        NewsCategory(
+            "Technology",
+            "technology",
+            Icons.Rounded.Memory
+        ),
+
+        NewsCategory(
+            "Sports",
+            "sports",
+            Icons.Rounded.SportsSoccer
+        ),
+
+        NewsCategory(
+            "Health",
+            "health",
+            Icons.Rounded.Favorite
+        ),
+
+        NewsCategory(
+            "Science",
+            "science",
+            Icons.Rounded.Science
+        ),
+
+        NewsCategory(
+            "Entertainment",
+            "entertainment",
+            Icons.Rounded.Movie
+        ),
+
+        NewsCategory(
+            "AI",
+            "ai",
+            Icons.Rounded.SmartToy
+        )
     )
 
 
@@ -32,13 +82,6 @@ fun NewsCategoryScreen(
         modifier = Modifier
             .padding(vertical = 12.dp)
     ) {
-
-        Text(
-            text = "Top Stories",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(horizontal = 16.dp)
-        )
 
         Spacer(modifier = Modifier.height(14.dp))
 
@@ -64,5 +107,5 @@ fun NewsCategoryScreen(
 @Preview
 @Composable
 private fun NewsCategoryPreview() {
-    NewsCategoryScreen({}, NewsCategory("",""))
+    NewsCategoryScreen({}, NewsCategory("","",Icons.Rounded.Public))
 }

@@ -2,10 +2,12 @@ package com.ahmadmaaz1.newsy.presentatoin.newscategory.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.FilterChip
@@ -18,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ahmadmaaz1.newsy.domain.model.NewsCategory
 
 @Composable
@@ -28,9 +31,10 @@ fun CategoryChipsRow(
 ) {
 
     LazyRow(
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
+
         items(categories) { category ->
 
             val isSelected = category == selected
@@ -40,30 +44,50 @@ fun CategoryChipsRow(
                 onClick = {
                     onSelected(category)
                 },
+
                 label = {
+
                     Text(
                         text = category.title,
-                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1
                     )
                 },
+
                 leadingIcon = {
-                    if (isSelected) {
-                        Icon(
-                            imageVector = Icons.Default.Done,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
+
+                    Icon(
+                        imageVector = category.icon,
+                        contentDescription = category.title,
+                        modifier = Modifier.size(18.dp)
+                    )
                 },
-                shape = CircleShape,
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primary,
-                    selectedLabelColor = Color.White,
-                    selectedLeadingIconColor = Color.White,
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    labelColor = MaterialTheme.colorScheme.onSurface
+
+                shape = RoundedCornerShape(50),
+
+                border = null,
+
+                elevation = FilterChipDefaults.filterChipElevation(
+                    elevation = if (isSelected) 4.dp else 0.dp
                 ),
-                border = null
+
+                colors = FilterChipDefaults.filterChipColors(
+
+                    selectedContainerColor = Color(0xFFE53935),
+
+                    selectedLabelColor = Color.White,
+
+                    selectedLeadingIconColor = Color.White,
+
+                    containerColor = Color(0xFFF3F4F6),
+
+                    labelColor = Color.Black,
+
+                    iconColor = Color.Gray
+                ),
+
+                modifier = Modifier.height(42.dp)
             )
         }
     }

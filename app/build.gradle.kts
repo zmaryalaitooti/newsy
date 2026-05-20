@@ -142,6 +142,10 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:5.9.0")
     testImplementation("io.kotest:kotest-assertions-core:5.9.0")
 
+    //
+   // icons
+    implementation("androidx.compose.material:material-icons-extended")
+
     implementation(project(":notification"))
 
 

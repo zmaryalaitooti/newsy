@@ -61,9 +61,15 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Brush
+import androidx.paging.compose.itemKey
 import com.ahmadmaaz1.newsy.presentatoin.bookmark.timeAgo
+import com.ahmadmaaz1.newsy.presentatoin.component.getTimeAgo
+import com.ahmadmaaz1.newsy.presentatoin.home.componet.BreakingNewsSlider
+import com.ahmadmaaz1.newsy.presentatoin.home.componet.NewsCard
 import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,12 +82,9 @@ fun HomeScreen(
     navigatorToSearch: () -> Unit
 ) {
 
-    val category =
-        viewModel.selectedCategory.collectAsState().value
+    var searchText by remember { mutableStateOf("") }
 
-    var searchText by remember {
-        mutableStateOf("")
-    }
+    val breakingNews by viewModel.breakingNews.collectAsState()
 
     HomeDrawerMenu {
 
@@ -219,189 +222,14 @@ fun HomeScreen(
                     )
                 }
             }
+            /// breaking news cards
             item {
 
                 Spacer(modifier = Modifier.height(14.dp))
-
-                HorizontalPager(
-                    state = rememberPagerState(
-                        pageCount = {
-                            min(article.itemCount, 5)
-                        }
-                    ),
-                    contentPadding = PaddingValues(horizontal = 18.dp),
-                    pageSpacing = 12.dp,
-                    modifier = Modifier.height(260.dp)
-                ) { page ->
-
-                    val news = article[page]
-
-                    news?.let {
-
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    navigatorToDetail(it)
-                                },
-                            shape = RoundedCornerShape(24.dp)
-                        ) {
-
-                            Box {
-
-                                AsyncImage(
-                                    model = it.urlToImage,
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier.fillMaxSize()
-                                )
-
-                                // Gradient Overlay
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .background(
-                                            Brush.verticalGradient(
-                                                colors = listOf(
-                                                    Color.Transparent,
-                                                    Color.Black.copy(alpha = 0.85f)
-                                                )
-                                            )
-                                        )
-                                )
-
-                                Column(
-                                    modifier = Modifier
-                                        .align(Alignment.BottomStart)
-                                        .padding(16.dp)
-                                ) {
-
-                                    Text(
-                                        text = it.source?.name ?: "News",
-                                        color = Color.White,
-                                        fontSize = 12.sp
-                                    )
-
-                                    Spacer(modifier = Modifier.height(6.dp))
-
-                                    Text(
-                                        text = it.title ?: "",
-                                        color = Color.White,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = 2
-                                    )
-
-                                    Spacer(modifier = Modifier.height(10.dp))
-
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-
-                                        Icon(
-                                            imageVector = Icons.Default.AccountCircle,
-                                            contentDescription = null,
-                                            tint = Color.White,
-                                            modifier = Modifier.size(14.dp)
-                                        )
-
-                                        Spacer(modifier = Modifier.width(4.dp))
-
-                                        Text(
-                                            text = timeAgo(
-                                                it.publishedAt ?: ""
-                                            ),
-                                            color = Color.White,
-                                            fontSize = 12.sp
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                BreakingNewsSlider(breakingNews = breakingNews, navigatorToDetail = navigatorToDetail)
             }
 
-            item {
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // TOP BREAKING CARD
-
-                article.itemSnapshotList.items.firstOrNull()?.let { news ->
-
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(220.dp)
-                            .padding(horizontal = 18.dp)
-                            .clickable {
-                                navigatorToDetail(news)
-                            },
-                        shape = RoundedCornerShape(24.dp)
-                    ) {
-
-                        Box {
-
-                            AsyncImage(
-                                model = news.urlToImage,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize()
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(
-                                        Brush.verticalGradient(
-                                            colors = listOf(
-                                                Color.Transparent,
-                                                Color.Black.copy(alpha = 0.8f)
-                                            )
-                                        )
-                                    )
-                            )
-
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.BottomStart)
-                                    .padding(16.dp)
-                            ) {
-
-                                Box(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(6.dp))
-                                        .background(Color.Red)
-                                        .padding(
-                                            horizontal = 8.dp,
-                                            vertical = 4.dp
-                                        )
-                                ) {
-
-                                    Text(
-                                        text = "BREAKING",
-                                        color = Color.White,
-                                        fontSize = 10.sp
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(10.dp))
-
-                                Text(
-                                    text = news.title ?: "",
-                                    color = Color.White,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    maxLines = 2
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
+// category header
             item {
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -420,15 +248,9 @@ fun HomeScreen(
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp
                     )
-
-                    Text(
-                        text = "See All",
-                        color = Color.Gray,
-                        fontSize = 12.sp
-                    )
                 }
             }
-
+            /// category chips
             item {
 
                 Spacer(modifier = Modifier.height(14.dp))
@@ -443,8 +265,6 @@ fun HomeScreen(
 
             item {
 
-                Spacer(modifier = Modifier.height(24.dp))
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -454,82 +274,26 @@ fun HomeScreen(
 
                     Text(
                         text = "Top Stories",
+                        style = MaterialTheme.typography.headlineMedium,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
 
-                    Text(
-                        text = "See All",
-                        color = Color.Gray,
-                        fontSize = 12.sp
-                    )
                 }
             }
-
-            items(article.itemCount) { index ->
+            // news card items
+            items(article.itemCount, key = article.itemKey()) { index ->
 
                 val news = article[index]
 
                 news?.let {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = 18.dp,
-                                vertical = 10.dp
-                            )
-                            .clickable {
-                                navigatorToDetail(it)
-                            }
-                    ) {
-
-                        AsyncImage(
-                            model = it.urlToImage,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .size(90.dp)
-                                .clip(RoundedCornerShape(18.dp))
-                        )
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        Column(
-                            modifier = Modifier.weight(1f)
-                        ) {
-
-                            Text(
-                                text = it.title ?: "",
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 15.sp,
-                                maxLines = 2
-                            )
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            Text(
-                                text = it.source?.name ?: "",
-                                color = Color.Gray,
-                                fontSize = 12.sp
-                            )
-                        }
-
-                        IconButton(
-                            onClick = { }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.bookmark),
-                                contentDescription = null,
-                                tint = Color.Gray
-                            )
-                        }
-                    }
+                    NewsCard(navigatorToDetail = navigatorToDetail, article = it)
                 }
             }
         }
     }
 }
+
 @Composable
 fun BannerAdView() {
     AndroidView(

@@ -1,5 +1,8 @@
 package com.ahmadmaaz1.newsy.presentatoin.home
 
+import android.util.Log
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Public
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -21,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) : ViewModel() {
 
+    private  val TAG = "HomeViewModel"
     val newsSources = listOf(
         "bbc-news",
         "cnn",
@@ -38,10 +42,20 @@ class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) 
     private val _breakingNews = MutableStateFlow<List<Article>>(emptyList())
     val breakingNews = _breakingNews.asStateFlow()
 
+    init {
+        Log.d(TAG, ": breaking news  ")
+        viewModelScope.launch {
+
+            _breakingNews.value = newsUseCause.getNews.getBreakingNews()
+            Log.d(TAG, ": breaking news  ${_breakingNews.value} ")
+
+        }
+    }
+
 
     private val _selectedCategory =
         MutableStateFlow(
-            NewsCategory("All", "general")
+            NewsCategory("All", "general", Icons.Rounded.Public)
         )
 
     val selectedCategory = _selectedCategory.asStateFlow()

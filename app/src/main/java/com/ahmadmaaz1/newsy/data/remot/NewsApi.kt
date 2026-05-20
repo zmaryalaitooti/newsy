@@ -21,10 +21,9 @@ interface NewsApi {
         @Query("apikey") apikey: String = "d933269afaaa4718bf2b2432db1d9b2e"
     ): Response<NewsResponse>
 
-    @GET("v2/top-headlines")
+    @GET("top-headlines")
     suspend fun getBreakingNews(
-        @Query("country") country: String = "us",
-        @Query("page") page: Int = 1,
+        @Query("sources") source: String = "bbc-news",
         @Query("apiKey") apiKey: String = "d933269afaaa4718bf2b2432db1d9b2e"
     ): Response<NewsResponse>
     @GET("everything")
