@@ -9,6 +9,8 @@ sealed class Route(val route: String) {
     object DetailScreen: Route("DetailScreen")
     object AppStarNavigation: Route("AppStarNavigation")
     object NewsNavigation: Route("NewsNavigation")
+
+    object NewsScreen: Route("NewsScreen")
     object NewsNavigationScreen: Route("NewsNavigationScreen")
 
 

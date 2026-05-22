@@ -39,7 +39,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import com.ahmadmaaz1.newsy.presentatoin.navgraph.NewsNavGraph
-import com.ahmadmaaz1.newsy.presentatoin.search.Person
 import com.ahmadmaaz1.newsy.ui.theme.NewsyTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint

@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) : ViewModel() {
 
-    private  val TAG = "HomeViewModel"
+    private val TAG = "HomeViewModel"
     val newsSources = listOf(
         "bbc-news",
         "cnn",
@@ -39,15 +39,22 @@ class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) 
         "medical-news-today",
     )
 
-    private val _breakingNews = MutableStateFlow<List<Article>>(emptyList())
+    private val _breakingNews = MutableStateFlow<BreakingNewsState>(BreakingNewsState.Loading)
     val breakingNews = _breakingNews.asStateFlow()
 
     init {
         Log.d(TAG, ": breaking news  ")
         viewModelScope.launch {
 
-            _breakingNews.value = newsUseCause.getNews.getBreakingNews()
-            Log.d(TAG, ": breaking news  ${_breakingNews.value} ")
+            try {
+                _breakingNews.value =
+                    BreakingNewsState.Success(newsUseCause.getNews.getBreakingNews())
+                Log.d(TAG, ": breaking news  ${_breakingNews.value} ")
+            } catch (exception: Exception) {
+                _breakingNews.value = BreakingNewsState.Error("Something went wrong")
+
+            }
+
 
         }
     }
@@ -68,27 +75,25 @@ class HomeViewModel @Inject constructor(private val newsUseCause: NewsUseCause) 
     @OptIn(ExperimentalCoroutinesApi::class)
     val news = selectedCategory
         .flatMapLatest { category ->
-            if (category.apiValue == "general"){
-                newsUseCause.getNews.getNews(source =newsSources.joinToString(","))
-            }
-            else{
+            if (category.apiValue == "general") {
+                newsUseCause.getNews.getNews(source = newsSources.joinToString(","))
+            } else {
                 newsUseCause.getNews(category.apiValue)
             }
         }
         .cachedIn(viewModelScope)
 
 
-
-
-
-
-    private fun getBreakingNews() {
+    fun getNewsAll() {
         viewModelScope.launch {
-            try {
 
-                _breakingNews.value = newsUseCause.getNews.getBreakingNews().toList()
-            } catch (e: Exception) {
-                e.printStackTrace()
+            try {
+                _breakingNews.value =
+                    BreakingNewsState.Success(newsUseCause.getNews.getBreakingNews())
+                Log.d(TAG, ": breaking news  ${_breakingNews.value} ")
+            } catch (exception: Exception) {
+                _breakingNews.value = BreakingNewsState.Error("Something went wrong")
+
             }
         }
     }

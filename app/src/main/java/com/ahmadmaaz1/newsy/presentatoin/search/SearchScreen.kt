@@ -2,6 +2,7 @@ package com.ahmadmaaz1.newsy.presentatoin.search
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,12 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,19 +31,35 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.ahmadmaaz1.newsy.domain.model.Article
+import com.ahmadmaaz1.newsy.presentatoin.home.componet.NewsCard
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 
+@OptIn(FlowPreview::class)
 @Composable
 fun SearchScreen(
     state: NewsSearchState,
     event: (SearchEvent) -> Unit,
-    navigateToDetails: (Article) -> Unit
+    navigateToDetails: (Article) -> Unit,
+    onBackClick: () -> Unit = {}
 ) {
 
     val isDark = isSystemInDarkTheme()
@@ -52,6 +71,44 @@ fun SearchScreen(
     val dividerColor = if (isDark) Color(0xFF2A2A2A) else Color(0xFFEDEDED)
     val cardColor = if (isDark) Color(0xFF1E1E1E) else Color.White
 
+    val articles = state.articles?.collectAsLazyPagingItems()
+
+    // 🔥 Suggestions (simple local filter OR from ViewModel)
+    val allSuggestions = remember {
+        listOf(
+            "Artificial Intelligence",
+            "US Election 2024",
+            "Stock Market Today",
+            "SpaceX Launch",
+            "Bitcoin Price",
+            "Technology News",
+            "Sports Today"
+        )
+    }
+
+    val suggestions = remember(state.search) {
+
+        if (state.search.isBlank()) {
+            allSuggestions
+        } else {
+            allSuggestions.filter {
+                it.contains(state.search.trim(), ignoreCase = true)
+            }
+        }
+    }
+    var showSuggestions by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { state.search }
+            .debounce(500)
+            .distinctUntilChanged()
+            .collect { query ->
+                if (query.isNotBlank()) {
+                    event(SearchEvent.searchEvent)
+                }
+            }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -62,10 +119,8 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Top Bar
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        // ---------------- TOP BAR ----------------
+        Box(modifier = Modifier.fillMaxWidth()) {
 
             Icon(
                 imageVector = Icons.Default.ArrowBack,
@@ -74,6 +129,7 @@ fun SearchScreen(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
                     .size(22.dp)
+                    .clickable { onBackClick() }
             )
 
             Text(
@@ -87,11 +143,11 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Search Field
+        // ---------------- SEARCH FIELD ----------------
         OutlinedTextField(
             value = state.search,
             onValueChange = {
-                event(SearchEvent.updateSearchNews(it))
+                event(SearchEvent.UpdateSearchNews(it))
             },
             placeholder = {
                 Text(
@@ -120,85 +176,123 @@ fun SearchScreen(
             }
         )
 
-        Spacer(modifier = Modifier.height(28.dp))
+        // ---------------- 🔥 SUGGESTIONS ----------------
+        if (showSuggestions)  {
 
-        // Recent Searches
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+            Spacer(modifier = Modifier.height(10.dp))
 
             Text(
-                text = "Recent Searches",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = textColor
+                text = "Suggestions",
+                color = secondaryText,
+                fontWeight = FontWeight.Bold
             )
 
-            Text(
-                text = "Clear",
-                color = Color.Red,
-                fontWeight = FontWeight.Medium
-            )
+            Spacer(modifier = Modifier.height(8.dp))
+
+            suggestions.forEach { suggestion ->
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showSuggestions = false
+                            event(SearchEvent.UpdateSearchNews(suggestion))
+                            event(SearchEvent.searchEvent)
+                        }
+                        .padding(vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null,
+                        tint = secondaryText,
+                        modifier = Modifier.size(18.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    Text(
+                        text = suggestion,
+                        color = textColor
+                    )
+                }
+            }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
-        val recentList = listOf(
-            "Artificial Intelligence",
-            "US Election 2024",
-            "Stock Market Today",
-            "SpaceX Launch",
-            "Bitcoin Price"
-        )
+        // ---------------- RESULTS ----------------
 
-        recentList.forEach {
+        if (articles != null) {
 
-            SearchHistoryItem(
-                text = it,
-                textColor = textColor,
-                iconColor = secondaryText
-            )
+            when {
 
-            Spacer(modifier = Modifier.height(16.dp))
+                articles.loadState.refresh is LoadState.Loading -> {
+
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                articles.itemCount == 0 && state.search.isNotBlank() -> {
+
+                    Text(
+                        text = "No results found",
+                        color = secondaryText,
+                        modifier = Modifier.padding(top = 20.dp)
+                    )
+                }
+
+                else -> {
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        items(
+                            count = articles.itemCount,
+                            key = articles.itemKey()
+                        ) { index ->
+
+                            val article = articles[index]
+
+                            article?.let {
+                                NewsCard(
+                                    article = it,
+                                    navigatorToDetail = navigateToDetails
+                                )
+                            }
+                        }
+
+                        if (articles.loadState.append is LoadState.Loading) {
+
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-
-        Divider(
-            modifier = Modifier.padding(vertical = 20.dp),
-            color = dividerColor
-        )
 
         Spacer(modifier = Modifier.height(18.dp))
     }
 }
 
-@Composable
-fun SearchHistoryItem(
-    text: String,
-    textColor: Color,
-    iconColor: Color
-) {
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Icon(
-            imageVector = Icons.Default.DateRange,
-            contentDescription = null,
-            tint = iconColor,
-            modifier = Modifier.size(20.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Text(
-            text = text,
-            fontSize = 16.sp,
-            color = textColor
-        )
-    }
-}
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun SearchScreenPreview() {

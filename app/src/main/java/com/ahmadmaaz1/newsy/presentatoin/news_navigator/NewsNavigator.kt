@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -30,9 +31,11 @@ import com.ahmadmaaz1.newsy.presentatoin.bookmark.BookMarkViewmodel
 import com.ahmadmaaz1.newsy.presentatoin.detail.DetailScreen
 import com.ahmadmaaz1.newsy.presentatoin.detail.DetailViewmodel
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.DetailEvent
+import com.ahmadmaaz1.newsy.presentatoin.home.BreakingNewsState
 import com.ahmadmaaz1.newsy.presentatoin.home.HomeScreen
 import com.ahmadmaaz1.newsy.presentatoin.home.HomeViewModel
 import com.ahmadmaaz1.newsy.presentatoin.navgraph.Route
+import com.ahmadmaaz1.newsy.presentatoin.news.NewsScreen
 import com.ahmadmaaz1.newsy.presentatoin.news_navigator.components.NewsBottomNavigation
 import com.ahmadmaaz1.newsy.presentatoin.news_navigator.components.NewsNavigate
 import com.ahmadmaaz1.newsy.presentatoin.search.NewsSearchViewModel
@@ -120,11 +123,39 @@ fun NewsNavigator() {
                             article = it
                         )
                     },
+                    navigatorToSeeAll = {
+                        navigateToTap(
+                            navController = navController,
+                            route = Route.NewsScreen.route
+                        )
+                    },
                     navigatorToSearch = {
                         navigateToTap(
                             navController,
                             route = Route.SearchScreen.route
                         )
+                    }
+                )
+            }
+
+            composable(route= Route.NewsScreen.route) {
+                val viewModel = hiltViewModel<HomeViewModel>()
+
+                val breakingNews by viewModel.breakingNews.collectAsState()
+
+                val list = (breakingNews as? BreakingNewsState.Success)?.news ?: emptyList()
+
+                NewsScreen(
+                    list = list,
+                    navigatorToDetail = {
+                        navigateToDetails(
+                            navController = navController,
+                            article = it
+                        )
+                    },
+
+                    onBackClick = {
+                        navController.popBackStack()
                     }
                 )
             }

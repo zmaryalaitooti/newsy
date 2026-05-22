@@ -20,11 +20,13 @@ class NewsSearchViewModel @Inject constructor(private val useCause: NewsUseCause
             is SearchEvent.searchEvent ->{
                 searchNews()
             }
-            is SearchEvent.updateSearchNews -> {
+            is SearchEvent.UpdateSearchNews -> {
                 _state.value = state.value.copy(search = event.searchQuery)
             }
         }
     }
+
+
 
     private fun searchNews() {
         val articles = useCause.searchNews.invoke(searchQuery = state.value.search, sources =  listOf("bbc-news","abc-news","al-jazeera-english"))

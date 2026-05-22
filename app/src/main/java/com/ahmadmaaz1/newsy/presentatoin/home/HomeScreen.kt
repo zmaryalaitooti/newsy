@@ -1,9 +1,10 @@
 package com.ahmadmaaz1.newsy.presentatoin.home
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
+import androidx.paging.LoadState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
@@ -22,7 +23,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -71,6 +71,9 @@ import com.ahmadmaaz1.newsy.presentatoin.component.getTimeAgo
 import com.ahmadmaaz1.newsy.presentatoin.home.componet.BreakingNewsSlider
 import com.ahmadmaaz1.newsy.presentatoin.home.componet.NewsCard
 import kotlin.math.min
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("RememberReturnType")
@@ -79,9 +82,13 @@ fun HomeScreen(
     article: LazyPagingItems<Article>,
     viewModel: HomeViewModel,
     navigatorToDetail: (Article) -> Unit,
+    navigatorToSeeAll: () -> Unit,
     navigatorToSearch: () -> Unit
 ) {
 
+    val isFirstLoading =
+        article.loadState.refresh is LoadState.Loading &&
+                article.itemCount == 0
     var searchText by remember { mutableStateOf("") }
 
     val breakingNews by viewModel.breakingNews.collectAsState()
@@ -98,9 +105,7 @@ fun HomeScreen(
         {
             // morning item
             item {
-
                 // TOP BAR
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -114,7 +119,7 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Text(
-                            text = "Good Morning, Ali 👋",
+                            text = "Good Morning 👋",
                             fontSize = 14.sp,
                             color = Color.Gray
                         )
@@ -122,7 +127,7 @@ fun HomeScreen(
                         Text(
                             text = "Here are your top stories",
                             fontSize = 13.sp,
-                            color = Color.LightGray
+                            color = Color.Gray
                         )
                     }
 
@@ -144,32 +149,24 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = searchText,
-                    onValueChange = {},
-                    readOnly = true,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = null
-                        )
-                    },
-                    placeholder = {
-                        Text("Search news, topics...")
-                    },
-                    shape = RoundedCornerShape(18.dp),
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 18.dp)
-                        .clickable {
-                            navigatorToSearch.invoke()
+                        .clickable { navigatorToSearch() }
+                ) {
+                    OutlinedTextField(
+                        value = "",
+                        onValueChange = {},
+                        enabled = false,
+                        placeholder = { Text("Search news, topics...") },
+                        leadingIcon = {
+                            Icon(Icons.Default.Search, contentDescription = null)
                         },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = Color.LightGray,
-                        unfocusedBorderColor = Color.LightGray,
-                        disabledBorderColor = Color.LightGray
+                        shape = RoundedCornerShape(18.dp),
+                        modifier = Modifier.fillMaxWidth()
                     )
-                )
+                }
             }
             // breaking news headers
             item {
@@ -177,7 +174,6 @@ fun HomeScreen(
                 Spacer(modifier = Modifier.height(20.dp))
 
                 // BREAKING NEWS TITLE
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -216,82 +212,245 @@ fun HomeScreen(
                     }
 
                     Text(
+                        modifier = Modifier.clickable {
+                            navigatorToSeeAll()
+                        },
                         text = "See All",
                         color = Color.Gray,
                         fontSize = 12.sp
                     )
                 }
             }
-            /// breaking news cards
-            item {
 
-                Spacer(modifier = Modifier.height(14.dp))
-                BreakingNewsSlider(breakingNews = breakingNews, navigatorToDetail = navigatorToDetail)
-            }
 
-// category header
-            item {
+            // ---------------------------
+            // ONE LOADING STATE
+            // ---------------------------
 
-                Spacer(modifier = Modifier.height(24.dp))
+            if (
+                breakingNews is BreakingNewsState.Loading ||
+                isFirstLoading
+            ) {
 
-                // CATEGORY TITLE
+                item {
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 18.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-
-                    Text(
-                        text = "Categories",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp
-                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 120.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
-            /// category chips
-            item {
 
-                Spacer(modifier = Modifier.height(14.dp))
+            // ---------------------------
+            // ONE ERROR STATE
+            // ---------------------------
 
-                // CATEGORY CHIPS
+            else if (
+                breakingNews is BreakingNewsState.Error ||
+                article.loadState.refresh is LoadState.Error
+            ) {
 
-                NewsCategoryScreen(
-                    onCategoryChange = { viewModel.onCategoryChange(it) },
-                    selectedCategory = viewModel.selectedCategory.collectAsState().value
-                )
-            }
+                val errorMessage = when {
 
-            item {
+                    breakingNews is BreakingNewsState.Error -> {
+                        (breakingNews as BreakingNewsState.Error).message
+                    }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 18.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                    article.loadState.refresh is LoadState.Error -> {
+                        (article.loadState.refresh as LoadState.Error)
+                            .error
+                            .localizedMessage ?: "Something went wrong"
+                    }
 
-                    Text(
-                        text = "Top Stories",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
+                    else -> "Something went wrong"
+                }
 
+                item {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp)
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFFFFF3F3))
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            Icon(
+                                imageVector = Icons.Default.Warning,
+                                contentDescription = null,
+                                tint = Color.Red,
+                                modifier = Modifier.size(34.dp)
+                            )
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            Text(
+                                text = errorMessage,
+                                color = Color.Red,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Button(
+                                onClick = {
+
+                                    // retry breaking news
+                                    if (breakingNews is BreakingNewsState.Error) {
+                                        viewModel.getNewsAll()
+                                    }
+
+                                    // retry paging
+                                    article.retry()
+                                },
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Text("Retry")
+                            }
+                        }
+                    }
                 }
             }
-            // news card items
-            items(article.itemCount, key = article.itemKey()) { index ->
 
-                val news = article[index]
+            // ---------------------------
+            // SUCCESS UI
+            // ---------------------------
 
-                news?.let {
-                    NewsCard(navigatorToDetail = navigatorToDetail, article = it)
+            else {
+
+                // breaking news content
+                item {
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    if (breakingNews is BreakingNewsState.Success) {
+
+                        BreakingNewsSlider(
+                            breakingNews = (breakingNews as BreakingNewsState.Success).news,
+                            navigatorToDetail = navigatorToDetail
+                        )
+                    }
+                }
+
+                // category header
+                item {
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 18.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        Text(
+                            text = "Categories",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp
+                        )
+                    }
+                }
+
+                // category chips
+                item {
+
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    NewsCategoryScreen(
+                        onCategoryChange = {
+                            viewModel.onCategoryChange(it)
+                        },
+                        selectedCategory = viewModel
+                            .selectedCategory
+                            .collectAsState()
+                            .value
+                    )
+                }
+
+                // top stories title
+                item {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 18.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        Text(
+                            text = "Top Stories",
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 16.dp)
+                        )
+                    }
+                }
+
+                if (
+                    article.loadState.refresh is LoadState.Loading &&
+                    article.itemCount > 0
+                ) {
+
+                    item {
+
+                        LinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 18.dp)
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+                // news list
+                items(
+                    count = article.itemCount,
+                    key = article.itemKey()
+                ) { index ->
+
+
+                    val news = article[index]
+
+                    news?.let {
+
+                        NewsCard(
+                            navigatorToDetail = navigatorToDetail,
+                            article = it
+                        )
+                    }
+                }
+
+                // pagination loading
+                if (article.loadState.append is LoadState.Loading) {
+
+                    item {
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
                 }
             }
         }
     }
+
 }
 
 @Composable
