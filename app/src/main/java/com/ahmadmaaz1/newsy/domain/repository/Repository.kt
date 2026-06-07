@@ -2,6 +2,7 @@ package com.ahmadmaaz1.newsy.domain.repository
 
 import androidx.paging.PagingData
 import com.ahmadmaaz1.newsy.domain.model.Article
+import com.ahmadmaaz1.newsy.domain.model.SearchModel
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
@@ -16,6 +17,12 @@ interface Repository {
         sources: List<String?>?
     ): Flow<PagingData<Article>>
 
+    fun getNewsSuggestion(
+    ): Flow<PagingData<SearchModel>>
+
+    suspend fun insertSuggestion(
+         suggestion: String
+    )
    suspend fun insertArticle(article: Article)
 
     suspend fun deleteArticle(article: Article)

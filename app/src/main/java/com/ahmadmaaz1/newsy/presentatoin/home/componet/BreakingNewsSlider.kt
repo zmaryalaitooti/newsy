@@ -52,7 +52,7 @@ fun BreakingNewsSlider(
 
     val pagerState = rememberPagerState(
         pageCount = {
-            min(breakingNews.size, 5)
+            min(breakingNews.size, breakingNews.size-1)
         }
     )
 
@@ -62,7 +62,7 @@ fun BreakingNewsSlider(
 
         while (true) {
 
-            delay(4000)
+            delay(8000)
 
             if (pagerState.pageCount > 0) {
 
@@ -126,25 +126,25 @@ fun BreakingNewsSlider(
 
                     // Bookmark Button
 
-                    IconButton(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(12.dp)
-                            .background(
-                                Color.Black.copy(alpha = 0.35f),
-                                CircleShape
-                            )
-                    ) {
-
-                        Icon(
-                            imageVector = Icons.Rounded.BookmarkBorder,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    }
+//                    IconButton(
+//                        onClick = {
+//
+//                        },
+//                        modifier = Modifier
+//                            .align(Alignment.TopEnd)
+//                            .padding(12.dp)
+//                            .background(
+//                                Color.Black.copy(alpha = 0.35f),
+//                                CircleShape
+//                            )
+//                    ) {
+//
+//                        Icon(
+//                            imageVector = Icons.Rounded.BookmarkBorder,
+//                            contentDescription = null,
+//                            tint = Color.White
+//                        )
+//                    }
 
                     Column(
                         modifier = Modifier

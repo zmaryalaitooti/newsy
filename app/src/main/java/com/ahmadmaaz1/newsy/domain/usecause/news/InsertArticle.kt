@@ -1,6 +1,6 @@
 package com.ahmadmaaz1.newsy.domain.usecause.news
 
-import com.ahmadmaaz1.newsy.data.local.NewsDao
+import com.ahmadmaaz1.newsy.data.local.dao.NewsDao
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.domain.repository.Repository
 

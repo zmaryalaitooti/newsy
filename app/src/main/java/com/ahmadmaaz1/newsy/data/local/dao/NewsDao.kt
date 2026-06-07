@@ -1,17 +1,16 @@
-package com.ahmadmaaz1.newsy.data.local
+package com.ahmadmaaz1.newsy.data.local.dao
 
-import com.ahmadmaaz1.newsy.domain.model.Article
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
+import com.ahmadmaaz1.newsy.domain.model.Article
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NewsDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insetArticle(article: Article)
 
     @Delete

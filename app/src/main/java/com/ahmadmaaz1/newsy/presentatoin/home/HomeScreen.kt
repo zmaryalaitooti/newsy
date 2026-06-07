@@ -82,14 +82,13 @@ fun HomeScreen(
     article: LazyPagingItems<Article>,
     viewModel: HomeViewModel,
     navigatorToDetail: (Article) -> Unit,
-    navigatorToSeeAll: () -> Unit,
+    navigatorToSeeAll: (BreakingNewsState) -> Unit,
     navigatorToSearch: () -> Unit
 ) {
 
     val isFirstLoading =
         article.loadState.refresh is LoadState.Loading &&
                 article.itemCount == 0
-    var searchText by remember { mutableStateOf("") }
 
     val breakingNews by viewModel.breakingNews.collectAsState()
 
@@ -180,11 +179,13 @@ fun HomeScreen(
                         .padding(horizontal = 18.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
-                ) {
+                )
+                {
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    )
+                    {
 
                         Text(
                             text = "Breaking News",
@@ -194,26 +195,26 @@ fun HomeScreen(
 
                         Spacer(modifier = Modifier.width(6.dp))
 
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(Color.Red)
-                                .padding(
-                                    horizontal = 6.dp,
-                                    vertical = 2.dp
-                                )
-                        ) {
-                            Text(
-                                text = "LIVE",
-                                color = Color.White,
-                                fontSize = 10.sp
-                            )
-                        }
+//                        Box(
+//                            modifier = Modifier
+//                                .clip(RoundedCornerShape(6.dp))
+//                                .background(Color.Red)
+//                                .padding(
+//                                    horizontal = 6.dp,
+//                                    vertical = 2.dp
+//                                )
+//                        ) {
+//                            Text(
+//                                text = "LIVE",
+//                                color = Color.White,
+//                                fontSize = 10.sp
+//                            )
+//                        }
                     }
 
                     Text(
                         modifier = Modifier.clickable {
-                            navigatorToSeeAll()
+                            navigatorToSeeAll(breakingNews)
                         },
                         text = "See All",
                         color = Color.Gray,

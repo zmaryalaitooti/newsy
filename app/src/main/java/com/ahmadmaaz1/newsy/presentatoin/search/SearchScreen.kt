@@ -19,14 +19,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -35,6 +31,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -47,15 +44,16 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.ahmadmaaz1.newsy.domain.model.Article
+import com.ahmadmaaz1.newsy.domain.model.SearchModel
 import com.ahmadmaaz1.newsy.presentatoin.home.componet.NewsCard
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 
 @OptIn(FlowPreview::class)
 @Composable
 fun SearchScreen(
+    viewModel: NewsSearchViewModel,
     state: NewsSearchState,
     event: (SearchEvent) -> Unit,
     navigateToDetails: (Article) -> Unit,
@@ -74,40 +72,39 @@ fun SearchScreen(
     val articles = state.articles?.collectAsLazyPagingItems()
 
     // 🔥 Suggestions (simple local filter OR from ViewModel)
-    val allSuggestions = remember {
-        listOf(
-            "Artificial Intelligence",
-            "US Election 2024",
-            "Stock Market Today",
-            "SpaceX Launch",
-            "Bitcoin Price",
-            "Technology News",
-            "Sports Today"
-        )
-    }
+    val allSuggestions = viewModel.suggestions.collectAsLazyPagingItems()
 
-    val suggestions = remember(state.search) {
+    val suggestions = remember(
+        state.search,
+        allSuggestions.itemSnapshotList.items
+    ) {
 
         if (state.search.isBlank()) {
-            allSuggestions
+
+            allSuggestions.itemSnapshotList.items
+
         } else {
-            allSuggestions.filter {
-                it.contains(state.search.trim(), ignoreCase = true)
+
+            allSuggestions.itemSnapshotList.items.filter {
+                it.search.contains(
+                    state.search.trim(),
+                    ignoreCase = true
+                )
             }
         }
     }
-    var showSuggestions by remember { mutableStateOf(true) }
-
-    LaunchedEffect(Unit) {
-        snapshotFlow { state.search }
-            .debounce(500)
-            .distinctUntilChanged()
-            .collect { query ->
-                if (query.isNotBlank()) {
-                    event(SearchEvent.searchEvent)
-                }
-            }
-    }
+    var showSuggestions by rememberSaveable  { mutableStateOf(true) }
+//
+//    LaunchedEffect(Unit) {
+//        snapshotFlow { state.search }
+//            .debounce(500)
+//            .collect { query ->
+//                if (query.isNotBlank()) {
+//                    viewModel.insertSuggestion(query)
+//                    event(SearchEvent.searchEvent)
+//                }
+//            }
+//    }
 
     Column(
         modifier = Modifier
@@ -169,6 +166,12 @@ fun SearchScreen(
             ),
             trailingIcon = {
                 Icon(
+                    modifier = Modifier.clickable(enabled = true, onClick = {
+                        showSuggestions = false
+                        event(SearchEvent.UpdateSearchNews(state.search))
+                        event(SearchEvent.searchEvent)
+                        viewModel.insertSuggestion(state.search)
+                    }),
                     imageVector = Icons.Default.Search,
                     contentDescription = null,
                     tint = secondaryText
@@ -196,8 +199,9 @@ fun SearchScreen(
                         .fillMaxWidth()
                         .clickable {
                             showSuggestions = false
-                            event(SearchEvent.UpdateSearchNews(suggestion))
+                            event(SearchEvent.UpdateSearchNews(suggestion.search))
                             event(SearchEvent.searchEvent)
+                            viewModel.insertSuggestion(suggestion.search)
                         }
                         .padding(vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -213,7 +217,7 @@ fun SearchScreen(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
-                        text = suggestion,
+                        text = suggestion.search,
                         color = textColor
                     )
                 }
@@ -301,9 +305,10 @@ fun SearchScreenPreview() {
         search = ""
     )
 
-    SearchScreen(
-        state = fakeState,
-        event = {},
-        navigateToDetails = {}
-    )
+//    SearchScreen(
+//        viewModel = viewModel,
+//        state = fakeState,
+//        event = {},
+//        navigateToDetails = {}
+//    )
 }

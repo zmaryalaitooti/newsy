@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
 
     // testing
@@ -142,9 +143,20 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:5.9.0")
     testImplementation("io.kotest:kotest-assertions-core:5.9.0")
 
-    //
    // icons
     implementation("androidx.compose.material:material-icons-extended")
+
+
+    // flow
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    // turbine
+    testImplementation("app.cash.turbine:turbine:1.2.1")
+
+    // optional - Test helpers for room
+    testImplementation("androidx.room:room-testing:$room_version")
+
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+
 
     implementation(project(":notification"))
 

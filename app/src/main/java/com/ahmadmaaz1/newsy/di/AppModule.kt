@@ -2,10 +2,10 @@ package com.ahmadmaaz1.newsy.di
 
 import android.app.Application
 import androidx.room.Room
-import com.ahmadmaaz1.newsy.data.local.MIGRATION_1_2
-import com.ahmadmaaz1.newsy.data.local.NewsDao
+import com.ahmadmaaz1.newsy.data.local.dao.NewsDao
 import com.ahmadmaaz1.newsy.data.local.NewsDb
 import com.ahmadmaaz1.newsy.data.local.NewsTypeConverter
+import com.ahmadmaaz1.newsy.data.local.dao.SearchDao
 import com.ahmadmaaz1.newsy.data.manager.LocalUserManagerIml
 import com.ahmadmaaz1.newsy.data.remot.NewsApi
 import com.ahmadmaaz1.newsy.data.repositoryt.RepositoryIml
@@ -63,8 +63,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsRepo(newsApi: NewsApi,newsDao: NewsDao): Repository {
-        return RepositoryIml(newsApi = newsApi,newsDao)
+    fun provideNewsRepo(newsApi: NewsApi,newsDao: NewsDao,searchDao: SearchDao): Repository {
+        return RepositoryIml(newsApi = newsApi,newsDao = newsDao,searchDao = searchDao)
     }
 
     @Provides
@@ -94,7 +94,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDao(newsDb: NewsDb): NewsDao = newsDb.getNewsDao()
+    fun provideNewsDao(newsDb: NewsDb): NewsDao = newsDb.getNewsDao()
+
+    @Provides
+    @Singleton
+    fun provideSearchDao(newsDb: NewsDb): SearchDao = newsDb.getSearchDao()
 
 
 }

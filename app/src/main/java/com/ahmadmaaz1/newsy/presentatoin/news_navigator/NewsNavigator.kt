@@ -4,9 +4,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -123,7 +120,7 @@ fun NewsNavigator() {
                             article = it
                         )
                     },
-                    navigatorToSeeAll = {
+                    navigatorToSeeAll = {list->
                         navigateToTap(
                             navController = navController,
                             route = Route.NewsScreen.route
@@ -163,6 +160,7 @@ fun NewsNavigator() {
             composable(route = Route.SearchScreen.route) {
                 val viewModel = hiltViewModel<NewsSearchViewModel>()
                 SearchScreen(
+                    viewModel = viewModel,
                     state = viewModel.state.value,
                     event = viewModel::onEvent,
                     navigateToDetails = {
@@ -170,7 +168,8 @@ fun NewsNavigator() {
                             article = it,
                             navController = navController
                         )
-                    }
+                    },
+                    onBackClick = {navController.popBackStack()}
                 )
             }
 
