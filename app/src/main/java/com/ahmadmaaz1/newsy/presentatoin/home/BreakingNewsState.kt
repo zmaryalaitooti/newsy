@@ -4,9 +4,9 @@ import com.ahmadmaaz1.newsy.domain.model.Article
 
 sealed class BreakingNewsState {
 
-    object Loading : BreakingNewsState()
+   public object Loading : BreakingNewsState()
 
-    data class Success(val news: List<Article>) : BreakingNewsState()
+  public  data class Success(val news: List<Article>) : BreakingNewsState()
 
     data class Error(val message: String) : BreakingNewsState()
 }

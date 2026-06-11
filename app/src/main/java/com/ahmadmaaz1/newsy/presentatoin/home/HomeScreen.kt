@@ -8,6 +8,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -82,7 +83,7 @@ fun HomeScreen(
     article: LazyPagingItems<Article>,
     viewModel: HomeViewModel,
     navigatorToDetail: (Article) -> Unit,
-    navigatorToSeeAll: (BreakingNewsState) -> Unit,
+    navigatorToSeeAll: (List<Article>) -> Unit,
     navigatorToSearch: () -> Unit
 ) {
 
@@ -92,12 +93,20 @@ fun HomeScreen(
 
     val breakingNews by viewModel.breakingNews.collectAsState()
 
+    val isDark = isSystemInDarkTheme()
+
+    val backgroundColor = if (isDark) Color(0xFF121212) else Color.White
+    val surfaceColor = if (isDark) Color(0xFF1E1E1E) else Color.White
+    val textColor = if (isDark) Color.White else Color.Black
+    val secondaryTextColor = if (isDark) Color.LightGray else Color.Gray
+    val errorBackground = if (isDark) Color(0xFF2D1B1B) else Color(0xFFFFF3F3)
+
     HomeDrawerMenu {
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(backgroundColor)
                 .statusBarsPadding(),
             contentPadding = PaddingValues(bottom = 20.dp)
         )
@@ -120,23 +129,27 @@ fun HomeScreen(
                         Text(
                             text = "Good Morning 👋",
                             fontSize = 14.sp,
-                            color = Color.Gray
+                            color = secondaryTextColor
                         )
 
                         Text(
                             text = "Here are your top stories",
                             fontSize = 13.sp,
-                            color = Color.Gray
+                            color = secondaryTextColor
                         )
                     }
 
                     IconButton(
-                        onClick = { }
+                        onClick = {
+                            val news: List<Article> =
+                                (breakingNews as BreakingNewsState.Success).news
+                            navigatorToSeeAll(news)
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = textColor
                         )
                     }
                 }
@@ -158,10 +171,26 @@ fun HomeScreen(
                         value = "",
                         onValueChange = {},
                         enabled = false,
-                        placeholder = { Text("Search news, topics...") },
-                        leadingIcon = {
-                            Icon(Icons.Default.Search, contentDescription = null)
+                        placeholder = {
+                            Text(
+                                "Search news, topics...",
+                                color = secondaryTextColor
+                            )
                         },
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = null,
+                                tint = secondaryTextColor
+                            )
+                        },
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledTextColor = textColor,
+                            disabledContainerColor = surfaceColor,
+                            disabledBorderColor = if (isDark) Color.DarkGray else Color.LightGray,
+                            disabledLeadingIconColor = secondaryTextColor,
+                            disabledPlaceholderColor = secondaryTextColor
+                        ),
                         shape = RoundedCornerShape(18.dp),
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -190,7 +219,8 @@ fun HomeScreen(
                         Text(
                             text = "Breaking News",
                             fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            color = textColor
                         )
 
                         Spacer(modifier = Modifier.width(6.dp))
@@ -214,10 +244,12 @@ fun HomeScreen(
 
                     Text(
                         modifier = Modifier.clickable {
-                            navigatorToSeeAll(breakingNews)
+                            val news: List<Article> =
+                                (breakingNews as BreakingNewsState.Success).news
+                            navigatorToSeeAll(news)
                         },
                         text = "See All",
-                        color = Color.Gray,
+                        color = secondaryTextColor,
                         fontSize = 12.sp
                     )
                 }
@@ -289,7 +321,7 @@ fun HomeScreen(
                             Icon(
                                 imageVector = Icons.Default.Warning,
                                 contentDescription = null,
-                                tint = Color.Red,
+                                tint = errorBackground,
                                 modifier = Modifier.size(34.dp)
                             )
 
@@ -297,7 +329,7 @@ fun HomeScreen(
 
                             Text(
                                 text = errorMessage,
-                                color = Color.Red,
+                                color = errorBackground,
                                 fontWeight = FontWeight.Medium,
                                 textAlign = TextAlign.Center
                             )

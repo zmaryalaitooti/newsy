@@ -46,13 +46,21 @@ fun HomeDrawerMenu(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Text(
-                    text = "Newsy",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 20.dp),
-                    color = colorResource(R.color.purple_500)
-                )
+                Row(modifier = Modifier.padding(horizontal = 20.dp)) {
+                    Text(
+                        text = "News",
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = "Y",
+                        color = Color.Red,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(20.dp))
 

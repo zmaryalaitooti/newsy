@@ -1,10 +1,21 @@
 package com.ahmadmaaz1.newsy.presentatoin.news_navigator
 
+import android.media.Image
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,7 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -40,22 +54,28 @@ import com.ahmadmaaz1.newsy.presentatoin.search.SearchScreen
 
 private const val TAG = "NewsNavigator"
 
+data class NewsBottomItems(val image: ImageVector,val text: String)
 @Composable
 fun NewsNavigator() {
 
+    val isDark = isSystemInDarkTheme()
+
+    val containerColor = if (isDark) Color.Black else Color.White
+    val unselectedColor = if (isDark) Color.White else Color.Black
+    val selectedColor = Color.Red
     val bottomItems = remember {
         listOf(
-            NewsNavigate(image = R.drawable.home, text = "Home"),
-            NewsNavigate(image = R.drawable.search, text = "Search"),
-            NewsNavigate(image = R.drawable.bookmark, text = "BookMark"),
+            NewsBottomItems(image = Icons.Default.Home, text = "Home"),
+            NewsBottomItems(image = Icons.Default.Search, text = "Explore"),
+            NewsBottomItems(image = Icons.Default.BookmarkBorder, text = "BookMark"),
         )
     }
 
-
+    Icons.Default.Home
     val navController = rememberNavController()
     val backStack = navController.currentBackStackEntryAsState().value
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
-    var bottomBarVisibility = remember(backStack) {
+    val bottomBarVisibility = remember(backStack) {
         backStack?.destination?.route == Route.HomeScreen.route ||
                 backStack?.destination?.route == Route.SearchScreen.route ||
                 backStack?.destination?.route == Route.BookMarkScreen.route
@@ -71,35 +91,59 @@ fun NewsNavigator() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            if (bottomBarVisibility){
-                NewsBottomNavigation(
-                    listNavigator = bottomItems, selected = selectedItem, onItemClicked = { index ->
-                        Log.d(TAG, "NewsNavigator: selectedItem " + selectedItem)
-                        when (index) {
+            if (bottomBarVisibility) {
 
-                            0 -> navigateToTap(
-                                navController = navController,
-                                route = Route.HomeScreen.route
+                NavigationBar(
+                    containerColor = containerColor
+                ) {
+
+                    bottomItems.forEachIndexed { index, item ->
+
+                        NavigationBarItem(
+                            selected = selectedItem == index,
+                            onClick = {
+                                when (index) {
+                                    0 -> navigateToTap(
+                                        navController,
+                                        Route.HomeScreen.route
+                                    )
+
+                                    1 -> navigateToTap(
+                                        navController,
+                                        Route.SearchScreen.route
+                                    )
+
+                                    2 -> navigateToTap(
+                                        navController,
+                                        Route.BookMarkScreen.route
+                                    )
+                                }
+                            },
+                            icon = {
+                                Icon(
+                                    item.image,
+                                    contentDescription = item.text
+                                )
+                            },
+                            label = {
+                                Text(item.text)
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = selectedColor,
+                                selectedTextColor = selectedColor,
+
+                                unselectedIconColor = unselectedColor,
+                                unselectedTextColor = unselectedColor,
+
+                                // removes the pill/background behind selected item
+                                indicatorColor = Color.Transparent
                             )
-
-                            1 -> navigateToTap(
-                                navController = navController,
-                                route = Route.SearchScreen.route
-                            )
-
-                            2 -> navigateToTap(
-                                navController = navController,
-                                route = Route.BookMarkScreen.route
-                            )
-
-                        }
-                    },
-
-                )
+                        )
+                    }
+                }
             }
         }
-    )
-    {
+    )    {
         val bottomPadding = it.calculateBottomPadding()
 
         NavHost(
@@ -121,6 +165,9 @@ fun NewsNavigator() {
                         )
                     },
                     navigatorToSeeAll = {list->
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("news_list", list)
                         navigateToTap(
                             navController = navController,
                             route = Route.NewsScreen.route
@@ -136,11 +183,12 @@ fun NewsNavigator() {
             }
 
             composable(route= Route.NewsScreen.route) {
-                val viewModel = hiltViewModel<HomeViewModel>()
+                val list =
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.get<List<Article>>("news_list")
+                        ?: emptyList()
 
-                val breakingNews by viewModel.breakingNews.collectAsState()
-
-                val list = (breakingNews as? BreakingNewsState.Success)?.news ?: emptyList()
 
                 NewsScreen(
                     list = list,
@@ -207,16 +255,7 @@ fun NewsNavigator() {
 
     }
 }
-//
-//private fun navigateToTap(navController: NavController, route: String) {
-//    navController.navigate(route) {
-//        popUpTo(navController.graph.startDestinationId) {
-//            saveState = true
-//        }
-//        launchSingleTop = true
-//        restoreState = true
-//    }
-//}
+
 
 
 private fun navigateToTap(navController: NavController, route: String) {

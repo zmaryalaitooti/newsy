@@ -63,6 +63,7 @@ import coil.compose.AsyncImage
 import com.ahmadmaaz1.newsy.R
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.domain.model.Source
+import com.ahmadmaaz1.newsy.presentatoin.component.getTimeAgo
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.DetailEvent
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.DetailTopAppBar
 import com.ahmadmaaz1.newsy.presentatoin.detail.component.InterstitialAdManager
@@ -271,6 +272,17 @@ fun DetailScreen(
                                         )
                                 ) {
                                     Text(
+                                        modifier = Modifier.clickable(enabled = true, onClick = {
+                                            if (viewmodel.isAdsShow == 0) {
+                                                InterstitialAdManager.showAd(
+                                                    activity = activity,
+                                                    onAdsShow = {
+                                                        viewmodel.isAdsShow = 1
+                                                    }
+                                                )
+                                            }
+                                            showWebView = true
+                                        }),
                                         text = "LIVE",
                                         color = Color.White,
                                         fontSize = 12.sp,
@@ -291,19 +303,10 @@ fun DetailScreen(
                             Spacer(modifier = Modifier.height(12.dp))
 
                             Text(
-                                text = "${article.source?.name ?: "News"} • 2h ago • 4 min read",
+                                text = "${article.source.name ?: "News"} • ${getTimeAgo(article.publishedAt!!)}",
                                 color = Color.Gray,
                                 fontSize = 14.sp
                             )
-
-                            Spacer(modifier = Modifier.height(14.dp))
-
-                            Row {
-
-                                NewsChip("Technology")
-                                Spacer(modifier = Modifier.width(8.dp))
-                                NewsChip("Space")
-                            }
 
                             Spacer(modifier = Modifier.height(18.dp))
 
