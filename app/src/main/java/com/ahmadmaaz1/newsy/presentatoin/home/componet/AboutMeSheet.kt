@@ -1,5 +1,6 @@
 package com.ahmadmaaz1.newsy.presentatoin.home.componet
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,14 @@ import androidx.compose.ui.unit.sp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AboutMeSheet(onDismiss: () -> Unit, sheetState: SheetState) {
+
+
+    val isDark = isSystemInDarkTheme()
+
+    val titleColor = if (isDark) Color.White else Color.Black
+    val bodyColor = if (isDark) Color.LightGray else Color.Gray
+    val infoColor = if (isDark) Color.Gray else Color.DarkGray
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -36,18 +45,19 @@ fun AboutMeSheet(onDismiss: () -> Unit, sheetState: SheetState) {
                 text = "About Me",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 12.dp),
+                color = titleColor
             )
             Text(
                 text = "Hi, I'm Ali  — an Android developer passionate about creating smooth, modern, and user-friendly apps using Jetpack Compose and Kotlin.",
                 fontSize = 16.sp,
-                color = Color.Gray,
+                color = bodyColor,
                 lineHeight = 22.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                text = "📧 Email: i12345k12345b@gmail.com",
-                color = Color.DarkGray,
+                text = "📧 Email: zmaryalaiali@gmail.com",
+                color = infoColor,
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.height(16.dp))

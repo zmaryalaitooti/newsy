@@ -1,5 +1,6 @@
 package com.ahmadmaaz1.newsy.presentatoin.home.componet
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,11 @@ fun AboutAppSheet(onDismiss: () -> Unit, sheetState: SheetState) {
         sheetState = sheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() }
     ) {
+        val isDark = isSystemInDarkTheme()
+
+        val titleColor = if (isDark) Color.White else Color.Black
+        val bodyColor = if (isDark) Color.LightGray else Color.Gray
+        val infoColor = if (isDark) Color.Gray else Color.DarkGray
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -38,19 +44,20 @@ fun AboutAppSheet(onDismiss: () -> Unit, sheetState: SheetState) {
                 text = "About This App",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 12.dp),
+                color = titleColor
             )
             Text(
                 text = "📰 Newsy App keeps you updated with the latest news from trusted global sources. Built with Jetpack Compose for a modern UI, it’s fast, lightweight, and ad-supported using AdMob.",
                 fontSize = 16.sp,
-                color = Color.Gray,
+                color = bodyColor,
                 lineHeight = 22.sp
             )
             Spacer(modifier = Modifier.height(16.dp))
             val version = getAppVersion(LocalContext.current)
             Text(
                 text = "Version: $version \nDeveloped by: Ali",
-                color = Color.DarkGray,
+                color = infoColor,
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.height(16.dp))

@@ -2,6 +2,7 @@ package com.ahmadmaaz1.newsy.presentatoin.home.componet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,13 @@ fun NewsChannelSheet(
     sheetState: SheetState,
     onAddSourceClick: () -> Unit
 ) {
+
+    val isDark = isSystemInDarkTheme()
+
+    val titleColor = if (isDark) Color.White else Color.Black
+    val textColor = if (isDark) Color.LightGray else Color.Black
+    val containerColor = if (isDark) Color(0xFF121212) else Color.White
+
     val channels = listOf(
         "BBC News",
         "ABC News",
@@ -66,22 +74,10 @@ fun NewsChannelSheet(
                 Text(
                     text = "Popular News Channels",
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = titleColor
                 )
 
-                IconButton(
-                    onClick = onAddSourceClick,
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.primary)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add Source",
-                        tint = Color.White
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -90,7 +86,7 @@ fun NewsChannelSheet(
                 Text(
                     text = "• $name",
                     fontSize = 16.sp,
-                    color = Color.Black,
+                    color = textColor,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp)

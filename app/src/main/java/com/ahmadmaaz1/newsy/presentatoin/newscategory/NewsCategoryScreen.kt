@@ -1,5 +1,7 @@
 package com.ahmadmaaz1.newsy.presentatoin.newscategory
 
+import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.BusinessCenter
@@ -13,6 +15,7 @@ import androidx.compose.material.icons.rounded.SportsSoccer
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,8 +28,11 @@ fun NewsCategoryScreen(
     selectedCategory: NewsCategory,
 ) {
 
-    val categories = listOf(
+    val isDark = isSystemInDarkTheme()
 
+    val textColor = if (isDark) Color.White else Color.Black
+
+    val categories = listOf(
         NewsCategory(
             "All",
             "general",
@@ -98,13 +104,15 @@ fun NewsCategoryScreen(
         Text(
             text = "Selected: ${selectedCategory.title}",
             modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleMedium,
+            color = textColor
+
         )
     }
 }
 
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun NewsCategoryPreview() {
     NewsCategoryScreen({}, NewsCategory("","",Icons.Rounded.Public))
