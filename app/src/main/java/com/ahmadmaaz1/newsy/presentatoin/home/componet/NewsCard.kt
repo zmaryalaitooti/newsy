@@ -1,5 +1,6 @@
 package com.ahmadmaaz1.newsy.presentatoin.home.componet
 
+import android.os.Bundle
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +27,8 @@ import coil.compose.AsyncImage
 import com.ahmadmaaz1.newsy.R
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.presentatoin.component.getTimeAgo
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
 
 @Composable
 fun NewsCard(
@@ -33,6 +36,10 @@ fun NewsCard(
     article: Article
 ) {
 
+    val bundle: Bundle = Bundle()
+    bundle.putString("article",article.title)
+    Firebase.analytics.logEvent("openArticle", bundle)
+//    throw Exception("This is a test crash")
     Row(
         modifier = Modifier
             .fillMaxWidth()

@@ -46,6 +46,9 @@ import androidx.paging.compose.itemKey
 import com.ahmadmaaz1.newsy.domain.model.Article
 import com.ahmadmaaz1.newsy.domain.model.SearchModel
 import com.ahmadmaaz1.newsy.presentatoin.home.componet.NewsCard
+import com.google.firebase.Firebase
+import com.google.firebase.analytics.analytics
+import com.google.firebase.analytics.logEvent
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -296,6 +299,14 @@ fun SearchScreen(
         Spacer(modifier = Modifier.height(18.dp))
     }
 }
+
+fun logSearch(query: String) {
+
+    Firebase.analytics.logEvent("news_search") {
+        param("query", query)
+    }
+}
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

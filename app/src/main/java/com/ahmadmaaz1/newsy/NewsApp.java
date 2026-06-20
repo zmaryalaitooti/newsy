@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 
 import com.ahmadmaaz1.notification.NotificationScheduler;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.FirebaseApp;
 
 import java.util.concurrent.Executors;
 
@@ -21,6 +22,7 @@ public class NewsApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        FirebaseApp firebaseApp = FirebaseApp.initializeApp(this);
         // Initialize Notification Scheduler
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED)
             NotificationScheduler.INSTANCE.scheduleDailyNotification(this);

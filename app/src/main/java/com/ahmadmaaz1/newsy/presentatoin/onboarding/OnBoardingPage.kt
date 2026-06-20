@@ -1,5 +1,6 @@
 package com.ahmadmaaz1.newsy.presentatoin.onboarding
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.autofill.contentType
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ahmadmaaz1.newsy.R
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun OnBoardingPage(
     modifier: Modifier = Modifier,
@@ -66,7 +69,7 @@ fun OnBoardingPage(
                 .height(imageHeight)
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp)),
-            contentScale = ContentScale.Inside
+            contentScale = ContentScale.Fit
         )
 
         Spacer(modifier = Modifier.height(24.dp))

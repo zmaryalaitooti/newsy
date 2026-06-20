@@ -41,6 +41,8 @@ import androidx.core.view.WindowCompat
 import com.ahmadmaaz1.newsy.presentatoin.navgraph.NewsNavGraph
 import com.ahmadmaaz1.newsy.ui.theme.NewsyTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -52,6 +54,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         installSplashScreen().apply {

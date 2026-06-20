@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.ahmadmaaz1.notification"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         minSdk = 23
