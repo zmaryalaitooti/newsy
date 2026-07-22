@@ -21,16 +21,12 @@ https://play.google.com/store/apps/details?id=com.ahmadmaaz1.newsy
 - Search news articles by keyword
 - Breaking News section
 - Infinite scrolling with Paging 3
-- Pull-to-refresh
-- Offline caching for better performance
-
 ### 🎨 User Experience
 - Built entirely with Jetpack Compose
 - Material 3 Design
 - Dark & Light Themes
 - Responsive UI for phones and tablets
 - Beautiful animations
-- Shimmer loading effects
 - Error & empty state handling
 
 ### 🔖 Personalization
@@ -39,7 +35,6 @@ https://play.google.com/store/apps/details?id=com.ahmadmaaz1.newsy
 - Category-based browsing
 
 ### 🔔 Notifications
-- Firebase Cloud Messaging (FCM)
 - Background notification scheduling using WorkManager
 
 ### 📈 Analytics & Monitoring
@@ -48,10 +43,7 @@ https://play.google.com/store/apps/details?id=com.ahmadmaaz1.newsy
 - Firebase Performance Monitoring
 
 ### 💰 Monetization
-- Banner Ads
-- Native Ads
-- Rewarded Ads
-
+- Interstitial
 ### 🚀 DevOps
 - GitHub Actions CI/CD
 - Firebase App Distribution
@@ -91,32 +83,45 @@ Data
 ```
 
 ---
+# 📦 Project Modules
 
-# 📦 Modular Architecture
-
-The application is divided into multiple modules for better scalability and maintainability.
+The application is organized into two modules to improve code organization and maintainability.
 
 ```
 Newsy
 │
 ├── app
-├── core
-│   ├── ui
-│   ├── designsystem
-│   ├── common
-│   ├── network
-│   ├── database
-│   ├── model
-│   └── analytics
+│   ├── data
+│   ├── domain
+│   ├── presentation
+│   ├── di
+│   ├── navigation
+│   ├── util
+│   └── MainActivity
 │
-├── feature-home
-├── feature-search
-├── feature-bookmark
-├── feature-detail
-├── feature-onboarding
-└── feature-settings
+└── notification
+    ├── worker
+    ├── scheduler
 ```
 
+### 📱 app
+The main application module containing:
+- Jetpack Compose UI
+- Clean Architecture (MVVM)
+- Data Layer
+- Domain Layer
+- Repository
+- Dependency Injection (Dagger Hilt) (DI)
+- Room Database
+- Retrofit
+- Paging 3
+
+### 🔔 notification
+A dedicated module responsible for:
+- WorkManager background tasks
+- Daily news notifications
+- Notification scheduling
+- Opening news articles from notifications
 ---
 
 # 🛠 Tech Stack
@@ -129,7 +134,7 @@ Newsy
 | Modularization | Multi Module |
 | Async | Kotlin Coroutines |
 | Reactive | Kotlin Flow, StateFlow |
-| Dependency Injection | Hilt |
+| Dependency Injection | Dagger Hilt |
 | Navigation | Navigation Compose |
 | Networking | Retrofit, OkHttp |
 | Serialization | Gson |
@@ -137,7 +142,6 @@ Newsy
 | Local Storage | Room Database, DataStore |
 | Image Loading | Coil |
 | Background Work | WorkManager |
-| Notifications | Firebase Cloud Messaging |
 | Analytics | Firebase Analytics |
 | Crash Reporting | Firebase Crashlytics |
 | Performance | Firebase Performance Monitoring |
@@ -149,8 +153,6 @@ Newsy
 ---
 
 # 📱 Screens
-
-- Splash
 - Onboarding
 - Home
 - Categories
@@ -236,9 +238,7 @@ This project uses **GitHub Actions** for Continuous Integration and Continuous D
 
 Supported Ads
 
-- Banner Ads
-- Native Ads
-- Rewarded Ads
+- Interstitial 
 
 During development always use **Google Test Ads**.
 
@@ -247,18 +247,19 @@ During development always use **Google Test Ads**.
 # 📂 Project Structure
 
 ```
-app
-│
-├── presentation
-├── domain
-├── data
-│
-├── di
-├── navigation
-├── util
-└── MainApplication
-```
 
+├── app
+│   ├── data
+│   ├── domain
+│   ├── presentation
+│   ├── di
+│   ├── navigation
+│   ├── util
+│   └── MainActivity
+│
+└── notification
+    ├── worker
+    ├── scheduler
 ---
 
 # ⚙️ Setup
@@ -364,7 +365,7 @@ MobileAds.initialize(this)
 
 # 👨‍💻 Developer
 
-**Ali Tooti**
+**Zmaryalai Ali**
 
 📧 Email: alitooti349@gmail.com
 
