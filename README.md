@@ -1,95 +1,383 @@
-# newsy
-# 📰 Newsy – Modern News App
+# 📰 Newsy – Modern Android News App
 
-Newsy is a modern Android news application built with **Jetpack Compose**, **Clean Architecture**, and **MVVM** pattern.  
-It delivers the latest news from multiple sources with beautiful UI, smooth pagination, and AdMob monetization.
+Newsy is a modern, scalable Android news application built with **Jetpack Compose**, **Clean Architecture**, and **MVVM**. The application delivers real-time news from multiple sources while following modern Android development best practices, including a **multi-module architecture**, **CI/CD**, **Firebase services**, and comprehensive testing.
+
+---
+## 📲 Download
+
+<a href="https://play.google.com/store/apps/details?id=com.ahmadmaaz1.newsy">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
+         alt="Get it on Google Play"
+         height="80">
+</a>
+
+Or download directly from Google Play:
+
+https://play.google.com/store/apps/details?id=com.ahmadmaaz1.newsy
+## ✨ Features
+
+### 📰 News
+- Browse the latest headlines from multiple categories
+- Search news articles by keyword
+- Breaking News section
+- Infinite scrolling with Paging 3
+- Pull-to-refresh
+- Offline caching for better performance
+
+### 🎨 User Experience
+- Built entirely with Jetpack Compose
+- Material 3 Design
+- Dark & Light Themes
+- Responsive UI for phones and tablets
+- Beautiful animations
+- Shimmer loading effects
+- Error & empty state handling
+
+### 🔖 Personalization
+- Save favorite articles
+- Search history
+- Category-based browsing
+
+### 🔔 Notifications
+- Firebase Cloud Messaging (FCM)
+- Background notification scheduling using WorkManager
+
+### 📈 Analytics & Monitoring
+- Firebase Analytics
+- Firebase Crashlytics
+- Firebase Performance Monitoring
+
+### 💰 Monetization
+- Banner Ads
+- Native Ads
+- Rewarded Ads
+
+### 🚀 DevOps
+- GitHub Actions CI/CD
+- Firebase App Distribution
+- Automated Debug APK Distribution
+- Automated Release Builds
+
+### 🧪 Testing
+- Unit Testing with JUnit
+- Kotlin Flow Testing
+- Kotest
+- Jetpack Compose UI Testing
 
 ---
 
-## 🚀 Features
+# 🏗️ Architecture
 
-- 🧠 **Clean Architecture (MVVM + Use Cases)**
-- 🖼 **Jetpack Compose UI** – built entirely with Compose components  
-- 🔍 **Smart Search** – search news articles by keyword or source  
-- 🔄 **Pagination with Jetpack Paging 3**  
-- 💬 **News Detail Screen** – rich preview with images and full content  
-- 🌙 **Dark & Light Themes**  
-- 📱 **Responsive UI** – supports all Android screen sizes  
-- 💰 **AdMob Integration**  
-  - Banner Ads  
-  - Native Ads
-- ⚡ **Shimmer Loading** while fetching articles  
-- 🧭 **Navigation Component with Compose**
+The project follows **Clean Architecture** and **MVVM** principles.
 
-## 🏗️ Tech Stack
-
-| Layer | Libraries / Tools |
-|--------|--------------------|
-| **UI** | Jetpack Compose, Material 3, Accompanist |
-| **Architecture** | MVVM, Clean Architecture |
-| **Async / Data** | Kotlin Coroutines, Flow, Paging 3 |
-| **Network** | Retrofit, OkHttp, Gson |
-| **Dependency Injection** | Hilt (Dagger) |
-| **Monetization** | Google AdMob (Banner, Native, Rewarded) |
-| **Notifications** | Firebase Cloud Messaging (FCM) |
-| **Other** | Coil for image loading, AndroidX Navigation |
+```
+Presentation
+│
+├── UI (Compose)
+├── ViewModel
+│
+Domain
+│
+├── UseCases
+├── Repository Interfaces
+│
+Data
+│
+├── Repository Implementation
+├── Remote Data Source
+├── Local Data Source
+├── Room Database
+└── Retrofit API
+```
 
 ---
 
+# 📦 Modular Architecture
 
-## ⚙️ Setup Instructions
+The application is divided into multiple modules for better scalability and maintainability.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/zmaryalaitooti/Newsy.git
-   cd Newsy
-Open in Android Studio (Arctic Fox or newer)
+```
+Newsy
+│
+├── app
+├── core
+│   ├── ui
+│   ├── designsystem
+│   ├── common
+│   ├── network
+│   ├── database
+│   ├── model
+│   └── analytics
+│
+├── feature-home
+├── feature-search
+├── feature-bookmark
+├── feature-detail
+├── feature-onboarding
+└── feature-settings
+```
 
-Add your News API key
+---
 
-Open your local.properties file
+# 🛠 Tech Stack
 
-Add:
+| Category | Technologies |
+|-----------|--------------|
+| Language | Kotlin |
+| UI | Jetpack Compose, Material 3 |
+| Architecture | MVVM, Clean Architecture |
+| Modularization | Multi Module |
+| Async | Kotlin Coroutines |
+| Reactive | Kotlin Flow, StateFlow |
+| Dependency Injection | Hilt |
+| Navigation | Navigation Compose |
+| Networking | Retrofit, OkHttp |
+| Serialization | Gson |
+| Pagination | Paging 3 |
+| Local Storage | Room Database, DataStore |
+| Image Loading | Coil |
+| Background Work | WorkManager |
+| Notifications | Firebase Cloud Messaging |
+| Analytics | Firebase Analytics |
+| Crash Reporting | Firebase Crashlytics |
+| Performance | Firebase Performance Monitoring |
+| Monetization | Google AdMob |
+| Testing | JUnit, Kotest, Compose UI Test |
+| CI/CD | GitHub Actions, Firebase App Distribution |
+| Version Control | Git & GitHub |
 
-ini
-Copy code
-NEWS_API_KEY=your_api_key_here
-Set up AdMob
+---
 
-Create an AdMob account → https://admob.google.com
+# 📱 Screens
 
-Replace the test ad unit IDs with your own:
+- Splash
+- Onboarding
+- Home
+- Categories
+- Breaking News
+- Search
+- Search History
+- Article Details
+- Bookmarks
+- Settings
 
-kotlin
-Copy code
-adUnitId = "ca-app-pub-xxxxxxxxxxxxxxxx/yyyyyyyyyy"
-Call MobileAds.initialize(this) in your Application class.
+---
 
-Run the app 🎉
+# 🚀 CI/CD Pipeline
 
-📸 Screenshots
-Home	Search	Detail
+This project uses **GitHub Actions** for Continuous Integration and Continuous Delivery.
 
-💰 AdMob Monetization
-Ad Type	Placement	Notes
-Banner Ad	Bottom of Home screen	Steady background income
-Native Ad	Between news items	Best balance of UX + revenue
-Rewarded Ad	Unlock premium feature	Optional user-initiated ads
+### CI
 
-During development, always use Google Test Ad IDs to avoid invalid traffic.
+- Build every Pull Request
+- Run Unit Tests
+- Run Lint
+- Generate APK
 
-📦 Dependencies
-gradle
-Copy code
-implementation "androidx.compose.ui:ui:<latest>"
-implementation "androidx.compose.material3:material3:<latest>"
-implementation "androidx.paging:paging-compose:<latest>"
-implementation "com.google.dagger:hilt-android:<latest>"
-implementation "com.google.android.gms:play-services-ads:<latest>"
-implementation "com.squareup.retrofit2:retrofit:<latest>"
-implementation "io.coil-kt:coil-compose:<latest>"
-🧑‍💻 Author
-  Ali  
-📧 Email us: alitooti349@gmail.com  
-💼 LinkedIn: https://www.linkedin.com/zmaryalai-ali  
-🐙 GitHub: https://github.com/zmaryalaitooti
+### CD
+
+- Automatically build Debug APK
+- Upload APK to Firebase App Distribution
+- Generate Release AAB
+- Ready for Google Play Store release
+
+---
+
+# 📊 Firebase Services
+
+✅ Firebase Analytics
+
+- Screen tracking
+- User engagement
+- Search analytics
+- Article views
+
+✅ Firebase Crashlytics
+
+- Crash reports
+- Stack traces
+- Non-fatal exception logging
+
+✅ Firebase Performance Monitoring
+
+- Startup time
+- Network requests
+- Rendering performance
+
+---
+
+# 🧪 Testing
+
+### Unit Testing
+
+- Repository Tests
+- Use Case Tests
+- ViewModel Tests
+
+### Flow Testing
+
+- Kotlin Flow
+- StateFlow
+
+### UI Testing
+
+- Jetpack Compose UI Test
+
+### Testing Libraries
+
+- JUnit
+- Kotest
+- Compose Test
+- Mockito
+
+---
+
+# 💰 AdMob Integration
+
+Supported Ads
+
+- Banner Ads
+- Native Ads
+- Rewarded Ads
+
+During development always use **Google Test Ads**.
+
+---
+
+# 📂 Project Structure
+
+```
+app
+│
+├── presentation
+├── domain
+├── data
+│
+├── di
+├── navigation
+├── util
+└── MainApplication
+```
+
+---
+
+# ⚙️ Setup
+
+## Clone the project
+
+```bash
+git clone https://github.com/zmaryalaitooti/Newsy.git
+```
+
+```bash
+cd Newsy
+```
+
+---
+
+## Add News API Key
+
+Create or open **local.properties**
+
+```properties
+NEWS_API_KEY=YOUR_API_KEY
+```
+
+---
+
+## Firebase
+
+1. Create a Firebase project
+2. Download `google-services.json`
+3. Place it inside the **app/** module
+
+Enable:
+
+- Analytics
+- Crashlytics
+- Cloud Messaging
+- Performance Monitoring
+
+---
+
+## AdMob
+
+Create your AdMob account.
+
+Replace the sample IDs with your own:
+
+```kotlin
+ca-app-pub-xxxxxxxxxxxxxxxx/yyyyyyyyyy
+```
+
+Initialize:
+
+```kotlin
+MobileAds.initialize(this)
+```
+
+---
+
+## Build
+
+```
+./gradlew assembleDebug
+```
+
+---
+
+## Run Tests
+
+```
+./gradlew test
+```
+
+---
+
+## Build Release
+
+```
+./gradlew bundleRelease
+```
+
+---
+
+# 📷 Screenshots
+
+| Home | Search | Detail | Bookmark |
+|------|--------|--------|-----------|
+| Coming Soon | Coming Soon | Coming Soon | Coming Soon |
+
+---
+
+# 📌 Future Improvements
+
+- AI-powered news summarization
+- Voice search
+- Offline reading mode
+- Multiple languages
+- Wear OS support
+- Tablet optimized layouts
+- Compose Multiplatform support
+
+---
+
+# 👨‍💻 Developer
+
+**Ali Tooti**
+
+📧 Email: alitooti349@gmail.com
+
+💼 LinkedIn
+
+https://www.linkedin.com/in/zmaryalai-ali/
+
+🐙 GitHub
+
+https://github.com/zmaryalaitooti
+
+---
+
+# ⭐ Support
+
+If you like this project, please consider giving it a ⭐ on GitHub. It helps support future development and improvements.
